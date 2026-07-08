@@ -1,7 +1,7 @@
-# Minimal Theme
+# tsungyentsai.github.io
 
-TRY TO EDIT
+Personal site of Tsung-Yen Tsai (蔡宗諺) — systems-oriented engineer for
+physical-world automation: robotics, simulation, optimization.
 
-# License
-
-This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/).
+Single static `index.html`, no build step. Content is sourced from my private
+career repository (claims-controlled wording); edit there first, then update here.
