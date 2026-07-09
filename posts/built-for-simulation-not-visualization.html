@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Built for Simulation, Not Visualization | Tsung-Yen Tsai</title>
+    <meta name="description" content="Choosing simulation fidelity by the decision you need to make — lessons from AMR deployment and high-density storage systems.">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../career.html">Career &amp; Education</a></li>
+        </ul>
+      </header>
+      <footer>
+        <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:tsungyentsai.work@gmail.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </footer>
+      <section>
+        <h1>Built for Simulation, Not Visualization</h1>
+        <p><em>Choosing simulation fidelity by the decision you need to make.</em></p>
+        <p><small>July 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>Early in my career, we distributed a Unity-based AMR simulation
+          across six machines so we could observe large-scale fleet behavior in
+          a spatial runtime. It took real effort to make that testbed work:
+          simplified agents, trimmed scenarios, an efficient communication
+          protocol, failover handling. And for some questions, it earned its
+          keep — large-scale stability tests, long reliability runs.</p>
+
+        <p>But the question we actually had at that moment was different: what
+          loads, failure modes, and architectural boundaries the fleet
+          management system had to support. For that question, it was the wrong
+          fidelity layer. It helped us observe large-scale behavior, but it did
+          not isolate the FMS limits we needed to reason about.</p>
+
+        <p>I have also seen the opposite extreme. If one AMR moves 10 pallets
+          per hour, will five AMRs move 50? Static estimation like this misses
+          queues, contention, and interference — the very things that decide
+          real throughput.</p>
+
+        <p>An overbuilt representation and an oversimplified one fail the same
+          way: the representation was chosen before the decision was defined.
+          Since then, I ask one question before building any simulation: what
+          decision must this simulation support?</p>
+
+        <h2>Fidelity follows the question</h2>
+
+        <p>A model describes a problem — objectives, constraints, state — and a
+          simulation lets you re-run that problem under changing conditions,
+          because the real world is too slow, too expensive, and sometimes too
+          dangerous to iterate in. The value of the whole exercise depends on
+          choosing the right abstraction: the one that makes your problem
+          testable, comparable, and decision-ready.</p>
+
+        <p>"Right" does not mean "maximal", and fidelity is not a single axis.
+          Robot-learning teams train in physics-first simulators rather than
+          gorgeous game worlds, because a robot has to learn contact — a
+          cabinet door that springs back, a fridge door held by a magnet — and
+          game physics often only has to look plausible. For that question,
+          interaction realism pays and visual realism is beside the point. In
+          the other direction, control loops and rendering loops operate at
+          very different time scales; wiring them together is a capability, not
+          a purpose. A photorealistic demo can align a room. It rarely
+          identifies a bottleneck.</p>
+
+        <p>Our own Unity setups made the same point over time. Looking back,
+          they fell into three tiers. When the question was robot behavior —
+          customized docking, random obstacles on site, movement errors
+          accumulating into docking failures — we adapted the full AMR stack
+          into simulation, SLAM and navigation included. When the question
+          shifted to field throughput, that same fidelity became noise: we
+          replaced localization and navigation with ground truth from the
+          engine, and used this tier to reproduce system-level mismatches, test
+          task flow and station timing, and find bottlenecks. And when the
+          question became the boundary of the system itself, we replaced the
+          local planner and action execution with a simple mock agent that
+          needed almost no compute — 100+ AMRs in one simulated site, multi-day
+          24/7 reliability testing, finding and fixing scale-related issues
+          that were invisible in smaller tests.</p>
+
+        <p>Same system, three questions, three different abstractions.</p>
+
+        <p>Two projects taught me the two halves of this lesson: one where I
+          removed reality on purpose, and one where reality pushed back.</p>
+
+        <h2>Case 1: removing detail to get a cleaner signal</h2>
+
+        <p>We were building a high-density stacked storage system, and the
+          hardware was not ready. The team was focused on delivering the first
+          version of the software, but decisions could not wait: storage,
+          retrieval, and order logic all needed algorithms, and the algorithms
+          needed comparing.</p>
+
+        <p>We started with a spreadsheet — estimate throughput from robot
+          count, layout, order sequence. It was too coarse: it could not
+          capture stack contention, reshuffle cost, or the coupling between
+          orders and containers. We also had a visualization system that showed
+          the whole operation, but it was far too slow for iterating strategies
+          across the system.</p>
+
+        <p>Discrete-event simulation became the reasonable choice — because I
+          was not trying to simulate the warehouse. I was trying to compare
+          allocation decisions. So I built a deliberately simpler model:
+          orders, inventory, container slots, stack locking, reshuffle,
+          moveback, workstation flow. And I left one thing out on purpose — the
+          full low-level traffic-control behavior of the robots.</p>
+
+        <p>The obvious question: without full traffic behavior, won't the
+          results be inaccurate? Two reasons convinced me. First, reproducing
+          low-level traffic-control behavior at DES granularity would have made
+          the simulator slower and less focused than the decision required.
+          Second, the system-level bottleneck lived in task and shaft
+          allocation and locking — the fleet controller was a separate
+          optimization problem with its own boundary. Dropping traffic was not
+          a shortcut. It was where I drew the boundary.</p>
+
+        <p>Each randomized case ran in about five seconds, so comparing
+          strategies — and combinations of strategies — across fifty random
+          seeds became routine. Decisions moved from opinions to means and
+          standard deviations. Some findings were counterintuitive: in our
+          target layout, a simple nearest-location heuristic beat the
+          clever-looking min-empty-slots one.</p>
+
+        <p>One boundary we never crossed: this DES was a comparative decision
+          tool, not a throughput guarantee. There was no field data to
+          calibrate against. What it gave us was a stable testbed for iterating
+          a family of storage, retrieval, reshuffle, and batching
+          strategies.</p>
+
+        <h2>Case 2: preserving behavior because the question was risk</h2>
+
+        <p>The other half of the lesson came from the AMR deployment — the same
+          system behind the three tiers.</p>
+
+        <p>In simulation, robots reached their target points perfectly. So when
+          two robots worked at close waypoints, the proximity-stop behavior
+          never triggered. On real hardware, positioning and movement error
+          triggered it constantly. Our simulator could not reproduce this class
+          of problem — not without injecting uncertainty into the simulated
+          robots.</p>
+
+        <p>We fixed it in the real system: adjusted waypoints, widened traffic
+          buffers, enlarged robot tolerance. In effect, we handled the error
+          model in the system design, even though the simulator had abstracted
+          it away. The reality we needed to preserve was not visual realism. It
+          was the error model.</p>
+
+        <p>That deployment taught us a stable cycle. First, reproduce the task
+          flow from field logs, and calibrate the simulation against throughput
+          and sensor data. Then freeze the scenario and test improvement plans
+          one by one: tune the layout, change route weighting, reorder station
+          assignments, adjust speeds. Through this loop, throughput improved by
+          40%+ in one panel-manufacturing deployment.</p>
+
+        <p>In the storage project I removed detail to make algorithms
+          comparable. In the AMR deployment I preserved runtime behavior,
+          because the question was risk.</p>
+
+        <h2>Four questions before you build one</h2>
+
+        <p>Today, AI-assisted tools make it easier than ever to build a
+          beautiful 3D production line — or even a starship — in days. But a 3D
+          scene is not a simulation system unless it can be used to ask and
+          answer engineering questions. That takes structured representation,
+          configurable scenarios, controllable behavior, validation hooks, and
+          comparable outputs.</p>
+
+        <p>So before building a simulation, I now answer four questions
+          first:</p>
+
+        <ol>
+          <li>What decision should this simulation support?</li>
+          <li>What reality must be preserved for that decision?</li>
+          <li>What can be safely abstracted away?</li>
+          <li>What evidence would make the result trustworthy enough to act
+            on?</li>
+        </ol>
+
+        <p>A simulation is useful when it preserves the reality that matters
+          for a decision and discards the rest deliberately. Fidelity is a
+          cost, not a virtue. Spend it where the decision lives.</p>
+      </section>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
+  </body>
+</html>
