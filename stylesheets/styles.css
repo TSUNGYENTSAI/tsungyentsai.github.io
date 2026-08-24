@@ -123,6 +123,51 @@ th {
   color: #444;
 }
 
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 20px;
+}
+
+.table-scroll table {
+  min-width: 680px;
+  margin: 0;
+}
+
+.compact-table {
+  font-size: 14px;
+}
+
+.writing-collection h3 {
+  margin-bottom: 8px;
+}
+
+.writing-collection-description {
+  color: #777;
+  margin-bottom: 12px;
+}
+
+.related-writing {
+  border-top: 1px solid #e5e5e5;
+  margin-top: 36px;
+  padding-top: 18px;
+}
+
+.related-writing p {
+  margin-bottom: 8px;
+}
+
+.related-writing p:last-child {
+  margin-bottom: 0;
+}
+
+.related-writing-label {
+  color: #777;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 img {
   max-width: 100%;
 }

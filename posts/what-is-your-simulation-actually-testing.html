@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>What Is Your Simulation Actually Testing? | Tsung-Yen Tsai</title>
+    <meta name="description"
+      content="How simulation integration boundaries determine which production software remains under test and what the resulting evidence can support.">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../career.html">Career &amp; Education</a></li>
+        </ul>
+      </header>
+      <footer>
+        <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:tsungyentsai.work@gmail.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </footer>
+      <section>
+        <h1>What Is Your Simulation Actually Testing?</h1>
+        <p><em>How integration boundaries shape what simulation results can
+          support.</em></p>
+        <p><small>August 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>In my <a href="built-for-simulation-not-visualization.html">last
+          article</a>, I argued that simulation fidelity should follow the
+          question. You do not need to preserve every part of reality. You need
+          the parts that matter to the decision.</p>
+
+        <p>Robotics adds another design choice: <strong>where should simulation
+          connect to the production stack?</strong></p>
+
+        <p>A simulated robot can still run the production navigation and
+          localization code, with only the physical world and sensors replaced.
+          Or robot-local execution can be replaced while the fleet-management
+          software remains in the loop. The system can be simplified further by
+          replacing most robot execution with a mock agent.</p>
+
+        <p>They are all simulations, but they are testing different parts of the
+          system.</p>
+
+        <p>Keep production navigation in the loop, and navigation failures are
+          part of the test. Replace it, and the test can no longer say much about
+          the production navigation stack.</p>
+
+        <h2>Deployment makes the boundary concrete</h2>
+
+        <p>I encountered this problem during an AMR deployment in a manufacturing
+          environment. We started with two robots, and actual throughput was well
+          below the pre-deployment estimate.</p>
+
+        <p>There were plenty of things we could change: robot speed, routes, task
+          sequencing, docking behavior, traffic settings, layout, and robot
+          count.</p>
+
+        <p>Those changes could all be tested directly in the field, but that is
+          an expensive way to experiment. Every change takes engineering time
+          and carries deployment risk. The field is the final reality check, but
+          it should not be the place to try every hypothesis.</p>
+
+        <p>We already had a Unity-based simulation connected to the FMS, so we
+          used it to study the deployment before making changes in the field. For
+          a fleet-throughput problem, the practical question was how much of the
+          production robot stack needed to remain in the loop.</p>
+
+        <p>The simulation-backed deployment work eventually supported a
+          throughput improvement of more than 40%.</p>
+
+        <h2>Three boundaries, three systems under test</h2>
+
+        <p>Looking back, I can group the configurations we used into three
+          integration boundaries. This is a retrospective framing. They were not
+          three equally mature modes designed as a formal architecture from day
+          one.</p>
+
+        <div class="table-scroll">
+          <table class="compact-table">
+            <thead>
+              <tr>
+                <th>Boundary</th>
+                <th>Production code in the loop</th>
+                <th>Substitute</th>
+                <th>Primarily tests</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Full-stack</strong></td>
+                <td>FMS + full robot stack</td>
+                <td>World + sensors</td>
+                <td>Robot stack + FMS integration</td>
+              </tr>
+              <tr>
+                <td><strong>Partial-stack</strong></td>
+                <td>FMS task and traffic logic</td>
+                <td>Robot-local execution</td>
+                <td>FMS decisions + fleet flow</td>
+              </tr>
+              <tr>
+                <td><strong>Mock-agent</strong></td>
+                <td>FMS interfaces + lifecycle</td>
+                <td>Most robot execution</td>
+                <td>FMS scalability + reliability</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>In the full-stack configuration, production navigation and
+          localization actually ran. Unity provided the environment and
+          generated simulated sensor feedback such as LiDAR point clouds. This
+          was useful when navigation or FMS-to-robot integration was part of the
+          question, because failures in those components remained visible.</p>
+
+        <p>For fleet-throughput experiments, production localization was not the
+          behavior we needed to validate. Keeping the full robot stack in the
+          loop added computational cost and introduced navigation and
+          localization failure modes that were outside the fleet-level behavior
+          we were trying to isolate.</p>
+
+        <p>We therefore used a simpler boundary for fleet-level experiments. The
+          production FMS still handled task decisions and traffic logic, while
+          robot-local planning, movement, and pose feedback came from a
+          simulation-side implementation.</p>
+
+        <p>For FMS scale and long-running reliability, we simplified further.
+          Lightweight agents in Unity accepted goals, moved through the simulated
+          world, and reported state back to the FMS. This allowed us to exercise
+          the system with more than 100 simulated AMRs and run multi-day 24/7
+          reliability testing.</p>
+
+        <p>These were not lower-quality versions of the same test. Each boundary
+          preserved a different set of production behaviors. Full-stack
+          simulation kept robot-local failures visible. Partial simulation
+          focused on FMS decisions and fleet flow. Mock agents removed most robot
+          execution so the FMS could be stressed at a much larger scale.</p>
+
+        <p>The integration boundary was part of the test design.</p>
+
+        <h2>A second physical world exposes hidden contracts</h2>
+
+        <p>Connecting a simulator to production software created another class
+          of problem. The first issues were often not about physics. They were
+          about state.</p>
+
+        <p>Unity needed to initialize racks and robots. The FMS also reconstructed
+          its own view of the system. If those two initialization paths produced
+          different states, both systems could start normally while reasoning
+          about two different factories.</p>
+
+        <p>That forced a basic question: <strong>where does the initial state
+          actually come from?</strong></p>
+
+        <p>Robot state had the same issue. Position was only one field. The FMS
+          also depended on carrying state, lift state, task state, agent state,
+          and error state. These states affected what the system could assign
+          next and how it interpreted an action in progress.</p>
+
+        <p>With one physical implementation, some assumptions can stay hidden in
+          startup order, configuration, or timing. Add a second implementation
+          and those assumptions have to become explicit. State ownership needs
+          to be clear. Action completion needs a shared meaning. Both sides need
+          to agree on which updates are authoritative.</p>
+
+        <p>I led the FMS-side integration, so part of my job was to trace those
+          boundaries when something went wrong. Was the problem in the FMS, the
+          robot logic, Unity, the communication layer, or simply the test setup?
+          That diagnosis becomes difficult when the responsibilities between
+          components are not clear.</p>
+
+        <p>Simulation integration therefore became an architecture test as much
+          as a simulation task.</p>
+
+        <p>This does not mean every physical dependency should be easy to
+          simulate. Some are difficult for good reasons. But when the
+          responsibility boundary is reasonable, substituting a dependency
+          forces us to make its interface, state ownership, and lifecycle much
+          more explicit.</p>
+
+        <h2>Evidence is claim-relative</h2>
+
+        <p>A simulation does not have one global level of trustworthiness. What
+          it can tell us depends first on which production code actually ran and
+          which behavior was replaced.</p>
+
+        <p>A substitute can fail in both directions.</p>
+
+        <p>The FMS workflow was asynchronous. Routes and traffic information
+          could change while robots were still executing tasks. Our partial
+          agent preserved enough of that behavior to expose race conditions and
+          state-ordering problems, but it was still not the production robot
+          implementation.</p>
+
+        <p>A failure observed there was a reason to investigate the interaction
+          across the boundary. It was not proof that a real robot would reproduce
+          the same sequence.</p>
+
+        <p>The reverse is also possible. A mock that reduces the interaction to
+          <code>receive command → move → complete</code> is convenient, but
+          timing, lifecycle, or recovery behavior that matters in production can
+          disappear from the test.</p>
+
+        <p>Preserving the contract made substitution possible. How well the
+          substitute represented the relevant behavior determined which claims
+          the result could support.</p>
+
+        <p>I think of the resulting limit as the <strong>evidence
+          ceiling</strong>.</p>
+
+        <p>If production localization never ran, the test cannot support a claim
+          about production localization. If most robot execution was replaced by
+          mock agents, a reliability run with more than 100 simulated AMRs can
+          provide useful evidence about FMS scalability and long-running
+          behavior. It says very little about how 100 physical robots would
+          navigate the same environment.</p>
+
+        <p>A partial simulation can show that a fleet-level change improves
+          congestion or throughput under the behaviors represented by that
+          simulation. That may be enough to decide that a change is worth testing
+          in the field. It is not validation of the production navigation stack,
+          because that stack was not part of the experiment.</p>
+
+        <p>What we simulate away places a hard limit on the claims the result can
+          support.</p>
+
+        <p>Scenario coverage, calibration, observability, repeated runs, and
+          evaluation still affect the strength of that evidence. They determine
+          how close a test gets to the ceiling. But they cannot recover evidence
+          for production behavior that was never in the loop.</p>
+
+        <h2>Let the field test the boundary</h2>
+
+        <p>The boundary still has to survive contact with the field.</p>
+
+        <p>In another deployment with very narrow paths, simulated robots could
+          reach their expected locations with very little error. Real robots
+          naturally had more positioning uncertainty.</p>
+
+        <p>Small localization and motion errors were enough to affect the FMS
+          safety logic. In the real system, robot safety zones could overlap in
+          situations that the simulation almost never produced.</p>
+
+        <p>One response would have been to add a better positioning-error model
+          to simulation. But that was not the only option. The same field evidence
+          could also mean that the deployed system needed to tolerate physical
+          uncertainty more explicitly.</p>
+
+        <p>In practice, we adjusted waypoint placement, traffic buffers, and
+          robot tolerances. The important point was not to reproduce every
+          positioning error in simulation, but to account for the gap where it
+          mattered in production behavior.</p>
+
+        <p>The sim-to-real gap did not automatically mean the simulator needed
+          more detail. It showed that an uncertainty abstracted away below the
+          simulation boundary could still affect the production software above
+          it.</p>
+
+        <p>Sometimes that uncertainty should be modeled in simulation. Sometimes
+          it should become part of the robustness contract of the production
+          system. The field tells us whether the boundary kept the behavior that
+          mattered.</p>
+
+        <p>At the integration boundary, I now check four things:</p>
+
+        <ul>
+          <li><strong>What production code actually ran?</strong></li>
+          <li><strong>What did we replace?</strong></li>
+          <li><strong>What failures can that substitute hide or create?</strong></li>
+          <li><strong>What claim are we trying to support?</strong></li>
+        </ul>
+
+        <p>Check the boundary before asking how realistic the simulation is.</p>
+
+        <nav class="related-writing" aria-label="Related writing">
+          <p class="related-writing-label">Related writing</p>
+          <p><a href="built-for-simulation-not-visualization.html">
+            &larr; Built for Simulation, Not Visualization</a></p>
+        </nav>
+      </section>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
+  </body>
+</html>
