@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Same Worlds, Different Decisions | Tsung-Yen Tsai</title>
+    <meta name="description"
+      content="How to compare engineering strategies against the same simulated problems, understand why results differ, and know what those results can support.">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../career.html">Career &amp; Education</a></li>
+        </ul>
+      </header>
+      <footer>
+        <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:tsungyentsai.work@gmail.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </footer>
+      <section>
+        <h1>Same Worlds, Different Decisions</h1>
+        <p><em>How to compare engineering decisions fairly in simulation.</em></p>
+        <p><small>August 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>Suppose two policies run in simulation.</p>
+
+        <p>Policy A produces 120 reshuffles. Policy B produces 80.</p>
+
+        <p>It is tempting to say that B is better.</p>
+
+        <p>But that conclusion only makes sense if both policies were solving
+          the same problem. If A started with a harder inventory distribution,
+          or B happened to receive an easier picking sequence, then the result
+          mixes two things together: the policy and the problem it happened to
+          receive.</p>
+
+        <p>A fair comparison has to separate them.</p>
+
+        <p>I encountered this while building a discrete-event simulation for a
+          high-density AS/RS system. In an <a
+          href="built-for-simulation-not-visualization.html">earlier article</a>,
+          I wrote about how we chose the model around the decision we needed to
+          make.</p>
+
+        <p>Once that model existed, a different question became important:</p>
+
+        <p><strong>How do we know that a difference between two strategies
+          actually came from the strategy?</strong></p>
+
+        <h2>Give every policy the same problem</h2>
+
+        <p>One experiment compared three ways of organizing picking requests.</p>
+
+        <p>Normal ordering kept the generated request sequence. Merge ordering
+          grouped requests for the same container while preserving each
+          container's first appearance. Batch ordering grouped requests first
+          by stack and then by the model's bottom-up access order.</p>
+
+        <p>For each seed and SKU occupancy level, every policy started with the
+          same modeled inventory and the same raw picking requests. Only the
+          request ordering changed.</p>
+
+        <figure class="article-figure world-decision-figure">
+          <div class="world-decision" role="img"
+            aria-label="A simplified modeled AS/RS world with three storage stacks accessed from below. Stack 3 has an empty bottom location. The raw request sequence is R1 for C2, R2 for C1, R3 for C5, and R4 for C1. Normal preserves R1, R2, R3, R4. Merge orders them R1, R2, R4, R3. Batch orders them R2, R4, R1, R3.">
+            <div class="modeled-world-panel">
+              <p class="figure-kicker">Same modeled world</p>
+              <div class="world-layout">
+                <div class="storage-area" aria-hidden="true">
+                  <div class="storage-stacks">
+                    <div class="storage-stack">
+                      <span class="stack-label">Stack 1</span>
+                      <span class="container">C3</span>
+                      <span class="container requested-container">C2</span>
+                      <span class="container requested-container">C1</span>
+                    </div>
+                    <div class="storage-stack">
+                      <span class="stack-label">Stack 2</span>
+                      <span class="container">C6</span>
+                      <span class="container requested-container">C5</span>
+                      <span class="container">C4</span>
+                    </div>
+                    <div class="storage-stack">
+                      <span class="stack-label">Stack 3</span>
+                      <span class="container">C8</span>
+                      <span class="container">C7</span>
+                      <span class="container empty-container">Empty</span>
+                    </div>
+                  </div>
+                  <div class="access-direction">Access side <span>↑</span></div>
+                </div>
+                <div class="raw-requests">
+                  <strong>Raw picking requests</strong>
+                  <div class="request-sequence">
+                    <span class="request-chip"><b>R1</b><small>C2</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R2</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R3</b><small>C5</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R4</b><small>C1</small></span>
+                  </div>
+                  <span class="request-note">Each request maps to a container
+                    in the same inventory.</span>
+                </div>
+              </div>
+            </div>
+            <div class="decision-panel">
+              <p class="figure-kicker">Different ordering decisions</p>
+              <div class="policy-examples">
+                <div class="policy-example">
+                  <strong>Normal</strong>
+                  <div class="request-sequence policy-request-sequence" aria-label="R1 for C2, R2 for C1, R3 for C5, R4 for C1">
+                    <span class="request-chip"><b>R1</b><small>C2</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R2</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R3</b><small>C5</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R4</b><small>C1</small></span>
+                  </div>
+                  <small>Keep request order</small>
+                </div>
+                <div class="policy-example">
+                  <strong>Merge</strong>
+                  <div class="request-sequence policy-request-sequence" aria-label="R1 for C2, R2 for C1, R4 for C1, R3 for C5">
+                    <span class="request-chip"><b>R1</b><small>C2</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R2</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R4</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R3</b><small>C5</small></span>
+                  </div>
+                  <small>Group by container; preserve first appearance</small>
+                </div>
+                <div class="policy-example">
+                  <strong>Batch</strong>
+                  <div class="request-sequence policy-request-sequence" aria-label="R2 for C1, R4 for C1, R1 for C2, R3 for C5">
+                    <span class="request-chip"><b>R2</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R4</b><small>C1</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R1</b><small>C2</small></span>
+                    <span class="sequence-arrow" aria-hidden="true">→</span>
+                    <span class="request-chip"><b>R3</b><small>C5</small></span>
+                  </div>
+                  <small>Group by stack, then bottom to top</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <figcaption><strong>The inventory and raw requests stay the same; only
+              the ordering decision changes.</strong> Stacks are accessed from
+            the bottom upward. Simplified example.</figcaption>
+        </figure>
+
+        <p>The warehouse state affected which containers were blocked and how
+          much reshuffling a request sequence could require. Holding the
+          inventory and raw requests constant kept that source of variation out
+          of the policy comparison.</p>
+
+        <p><strong>If two strategies start from different problems, their
+          outputs are not a fair comparison.</strong></p>
+
+        <p>But making one comparison fair does not make one scenario
+          representative.</p>
+
+        <h2>Repeat the comparison across different problems</h2>
+
+        <p>One warehouse state may happen to favor one strategy.</p>
+
+        <p>So the experiment repeated the same comparison across different
+          seeded scenarios. At each tested SKU occupancy level, the three
+          ordering strategies were compared across 30 seeded scenarios.</p>
+
+        <p>The scenarios changed between trials, but every policy faced the same
+          scenario within a trial.</p>
+
+        <p>Testing only one scenario risks drawing a conclusion from a case that
+          happens to favor one strategy. Giving each policy a different scenario
+          creates the opposite problem: scenario difficulty becomes mixed into
+          the comparison.</p>
+
+        <p>Instead, each scenario became one matched comparison, and the same
+          comparison was repeated against different problems.</p>
+
+        <p>The point was not simply to get a better average. It was to ask
+          whether the difference kept showing up after the problem changed.</p>
+
+        <p><strong>One run shows that a result can happen. Repeated matched runs
+          show whether the difference persists.</strong></p>
+
+        <p>If it does, the next question is more useful than the final
+          ranking:</p>
+
+        <p><strong>What inside the system actually changed?</strong></p>
+
+        <h2>Do not stop at who won</h2>
+
+        <p>In this AS/RS model, accessing a target container could require
+          temporarily moving other containers that blocked it. We tracked those
+          temporary relocations as reshuffle operations.</p>
+
+        <p>Request ordering mattered because it changed both which related
+          requests were handled together and the order in which containers
+          within a stack were accessed. In the simplified example above,
+          accessing C2 before C1 requires C1 to be moved out of the way; batch
+          ordering handles C1 first.</p>
+
+        <p>At each tested SKU occupancy level, batch ordering produced
+          substantially fewer recorded reshuffles on average over the 30 seeded
+          scenarios.</p>
+
+        <p>Inspecting the modeled execution helped explain why. By grouping
+          related requests and aligning container access with the stack
+          structure, batch ordering reduced accesses that required other
+          containers to be temporarily moved out of the way.</p>
+
+        <p>That was more useful than a final ranking alone: the simulator exposed
+          the difference and helped explain the mechanism behind it.</p>
+
+        <p><strong>A useful simulation should show not only which policy
+          performed better, but what changed inside the system when it
+          did.</strong></p>
+
+        <p>Sometimes, however, looking inside the decision reveals something
+          else entirely.</p>
+
+        <h2>Check whether the policy actually had a choice</h2>
+
+        <p>In some highly constrained storage states, different reshuffle
+          heuristics were left with the same feasible destination.</p>
+
+        <p>They had different preferences, but the system gave them the same
+          action.</p>
+
+        <div class="convergence-example" role="img"
+          aria-label="Heuristic A and Heuristic B both select Location X">
+          <div class="heuristic-sources">
+            <span>Heuristic A</span>
+            <span>Heuristic B</span>
+          </div>
+          <span class="convergence-lines" aria-hidden="true"></span>
+          <div class="convergence-target"><span aria-hidden="true">→</span>
+            <strong>Location X</strong>
+          </div>
+        </div>
+
+        <p>This was not the same as observing two algorithms with similar final
+          scores.</p>
+
+        <p><strong>They made the same choice.</strong></p>
+
+        <p>That did not make the heuristics equivalent. When several feasible
+          destinations existed, their preferences could still matter. But once
+          the constraints reduced the feasible set to the same choice, there was
+          no policy difference left to express.</p>
+
+        <p>This leads to a question that is easy to skip in optimization
+          work:</p>
+
+        <blockquote>
+          <p>Before asking which heuristic is better, is there anything
+            meaningful left for it to choose?</p>
+        </blockquote>
+
+        <p><strong>A policy can only matter where the system leaves it a
+          decision surface.</strong></p>
+
+        <p>If the feasible set forces every tested strategy into the same action,
+          improving the policy may have little system-level value. The more
+          important lever may be the layout, capacity, constraints, or problem
+          formulation.</p>
+
+        <p>Simulation can therefore answer something more useful than “which
+          algorithm won?” It can show whether algorithm choice has leverage at
+          all.</p>
+
+        <h2>Know what the comparison can tell you</h2>
+
+        <p>There is one final boundary around the experiment.</p>
+
+        <div class="table-scroll comparison-boundary">
+          <table class="compact-table">
+            <thead>
+              <tr>
+                <th>Outcome</th>
+                <th>Model coverage</th>
+                <th>What we could conclude</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Outcome"><strong>Reshuffle behavior</strong></td>
+                <td data-label="Model coverage">Request ordering, container access, and reshuffle operations</td>
+                <td data-label="What we could conclude">Compare how ordering policies changed reshuffles under the
+                  modeled storage mechanics</td>
+              </tr>
+              <tr>
+                <td data-label="Outcome"><strong>Production throughput</strong></td>
+                <td data-label="Model coverage">Full robot routing, multi-robot traffic, and congestion were
+                  outside this experiment</td>
+                <td data-label="What we could conclude">Could not determine how the policy would affect end-to-end field
+                  throughput</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>A policy that reduced reshuffling might also reduce traffic — or it
+          might concentrate robot activity and create another bottleneck.</p>
+
+        <p>This experiment did not answer that question.</p>
+
+        <p>In the previous article, <a
+          href="what-is-your-simulation-actually-testing.html"><em>What Is Your
+          Simulation Actually Testing?</em></a>, I looked at the same evidence
+          discipline through integration boundaries: which production behavior
+          actually remained in the loop. Here, the question is inside the
+          model: which mechanisms were represented for the outcome being
+          compared.</p>
+
+        <p><strong>If the model does not represent a mechanism, the experiment
+          cannot tell us how that mechanism changes the comparison.</strong></p>
+
+        <p>That does not make the result weak. It makes the result specific.</p>
+
+        <h2>Comparing decisions, not just simulating systems</h2>
+
+        <p>Looking back, the most reusable lesson was the comparison pattern:</p>
+
+        <ol class="comparison-pattern">
+          <li>Give each strategy the same problem.</li>
+          <li>Repeat the comparison across different problems.</li>
+          <li>Look at what changed inside the system.</li>
+          <li>Check whether the strategy actually had a meaningful choice.</li>
+          <li>Be precise about what the model can actually compare.</li>
+        </ol>
+
+        <p>That is when simulation becomes more than a representation of a
+          system.</p>
+
+        <p>It becomes a practical way to compare engineering decisions.</p>
+
+        <nav class="related-writing" aria-label="Earlier in this series">
+          <p class="related-writing-label">Earlier in this series</p>
+          <p><a href="built-for-simulation-not-visualization.html">
+            Built for Simulation, Not Visualization</a></p>
+          <p><a href="what-is-your-simulation-actually-testing.html">
+            What Is Your Simulation Actually Testing?</a></p>
+        </nav>
+      </section>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
+  </body>
+</html>
