@@ -430,6 +430,10 @@ th {
   margin-bottom: 8px;
 }
 
+.writing-collection + .writing-collection {
+  margin-top: 30px;
+}
+
 .writing-collection-description {
   color: #777;
   margin-bottom: 12px;

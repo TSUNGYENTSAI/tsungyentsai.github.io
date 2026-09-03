@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>When Coding Gets Faster, Coordination Becomes the Bottleneck | Tsung-Yen Tsai</title>
+    <meta name="description"
+      content="How AI-assisted development shifts the bottleneck from local implementation to architectural convergence in small engineering teams.">
+    <link rel="stylesheet" href="../stylesheets/styles.css">
+    <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../career.html">Career &amp; Education</a></li>
+        </ul>
+      </header>
+      <footer>
+        <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:tsungyentsai.work@gmail.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </footer>
+      <section>
+        <h1>When Coding Gets Faster, Coordination Becomes the Bottleneck</h1>
+        <p><em>Why small AI-assisted teams may need to converge on one
+          end-to-end workflow before splitting implementation.</em></p>
+        <p><small>September 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>Three engineers can be coding in parallel while the project itself
+          is not moving in parallel.</p>
+
+        <p>I encountered this during a recent rapid prototype. We initially
+          divided the work along familiar boundaries: frontend, domain logic,
+          and downstream integration.</p>
+
+        <p>Each component could progress quickly, but the work was not actually
+          independent. One component generated an initial result. The frontend
+          needed to make that result editable. Another component needed to
+          consume the modified and validated state.</p>
+
+        <p>The real dependency looked more like:</p>
+
+        <pre><code>Initial Generation
+       ↓
+Editable State
+       ↓
+Validation
+       ↓
+Accepted State
+       ↓
+Downstream Generation</code></pre>
+
+        <p>The coding was fast. The slower part was deciding which state was
+          canonical, when an edit became valid, what downstream could assume,
+          and what belonged in the first version. By coordination, I do not mean
+          more meetings. I mean the latency of converging on shared architectural
+          decisions. That was becoming the critical path.</p>
+
+        <h2>AI Accelerates Both Exploration and Divergence</h2>
+
+        <p>AI coding tools are very good at turning a local mental model into
+          working software.</p>
+
+        <p>Early in the project, several of us independently built interactive
+          prototypes to show how we thought the workflow should behave.
+          Comparing real behavior exposed hidden assumptions faster than diagrams
+          alone, but it also revealed the opposite effect:</p>
+
+        <blockquote>
+          <p>Three locally reasonable implementations do not automatically
+            become one coherent system.</p>
+        </blockquote>
+
+        <p>The frontend, algorithm, and downstream components can each define
+          sensible interfaces for their local needs. Each design may be
+          reasonable on its own.</p>
+
+        <p>Someone still has to answer:</p>
+
+        <blockquote>
+          <p>What does the system as a whole mean?</p>
+        </blockquote>
+
+        <p>AI lowers the cost of expressing an idea, but it does not choose
+          among competing interpretations. Executable prototypes can accelerate
+          convergence when compared together—or multiply divergence when built
+          independently for too long.</p>
+
+        <h2>We Changed the Unit of Ownership</h2>
+
+        <p>Instead of continuing to divide the project strictly by component,
+          we temporarily changed the ownership model. I temporarily took
+          ownership of a thin end-to-end reference path:</p>
+
+        <pre><code>Configure
+→ Generate
+→ Inspect / Edit
+→ Validate
+→ Accept
+→ Generate Downstream Result
+→ Inspect Result</code></pre>
+
+        <p>The underlying component capabilities already existed. The work was
+          to connect them into one coherent, interactive path—not to rebuild
+          every component from scratch.</p>
+
+        <p>The goal was also not to build every future feature. It was to answer
+          a narrower question:</p>
+
+        <blockquote>
+          <p>What is the smallest coherent system that proves this workflow
+            works?</p>
+        </blockquote>
+
+        <p>That required deciding what state moves between stages, who may
+          modify it, when validation happens, what downstream may consume, and
+          which forms of complexity to leave out.</p>
+
+        <p>A complete product could include more scenarios, constraints, editing
+          operations, and optimization strategies. Adding them too early would
+          increase complexity across every layer without necessarily telling us
+          whether the core workflow held together.</p>
+
+        <p>For this phase, the end-to-end owner's first job was not feature
+          maximization. It was uncertainty reduction.</p>
+
+        <h2>Workflow Semantics Before Stable Contracts</h2>
+
+        <p>One useful change was to stop asking:</p>
+
+        <blockquote>
+          <p>How should the frontend call this algorithm?</p>
+        </blockquote>
+
+        <p>and start with:</p>
+
+        <blockquote>
+          <p>What is the user actually doing?</p>
+        </blockquote>
+
+        <p>That gave us a workflow first:</p>
+
+        <pre><code>Generate
+→ Edit
+→ Validate
+→ Accept
+→ Continue</code></pre>
+
+        <p>Generation produces something editable. Validation evaluates the
+          current state. Acceptance establishes the state downstream may
+          consume.</p>
+
+        <p>The API follows from those semantics, not the other way around.
+          Otherwise, existing modules can define the product architecture simply
+          because they already exist.</p>
+
+        <p>This does not make contracts less important. The distinction is
+          closer to:</p>
+
+        <blockquote>
+          <p><strong>Minimum contract first, stable contract later.</strong></p>
+        </blockquote>
+
+        <p>Trying to stabilize a contract before the behavior is understood
+          often creates one loop:</p>
+
+        <pre><code>Agree Contract
+→ Implement
+→ Discover Missing Semantics
+→ Revise and Re-integrate</code></pre>
+
+        <p>A thin executable path gave us another:</p>
+
+        <pre><code>Define Minimum Semantics
+→ Build Reference Behavior
+→ Observe Real Integration Needs
+→ Stabilize Contract</code></pre>
+
+        <p>The contract did not disappear. It became one output of architecture
+          discovery. Once the boundary is understood, explicit contracts become
+          much more important—especially with independent deployments, multiple
+          consumers, or high failure costs. The problem is assuming an uncertain
+          boundary is already stable.</p>
+
+        <h2>Reducing Parallelism Made Parallel Work Easier</h2>
+
+        <p>Before the reference path existed, everyone was technically working
+          in parallel, but each person depended on shared decisions that were
+          still moving.</p>
+
+        <p>After the path worked, specialists could extend the same baseline:
+          integrate a better generation strategy, improve the product workflow,
+          or push harder on validation and downstream capability. They no longer
+          had to imagine independently what the other parts might eventually
+          do.</p>
+
+        <p>We reduced parallelism around uncertain architecture first, then
+          increased parallelism around implementation.</p>
+
+        <p>This resembles a walking skeleton or tracer bullet. The principle is
+          not new; AI changes its economics. It is now cheaper for one engineer
+          to cross a larger technical surface and assemble a small executable
+          path, making the reference implementation useful for architecture
+          discovery as well as delivery.</p>
+
+        <h2>Where This Pattern Applies</h2>
+
+        <p>This pattern is most useful when the team is small, the cycle is
+          short, and tightly coupled workflow semantics are still uncertain.
+          Once boundaries are stable—or components have independent deployment
+          or compatibility requirements—component ownership may be the better
+          starting point.</p>
+
+        <p>An end-to-end owner can also become a bottleneck. The role provides
+          convergence accountability, not a monopoly on architectural thinking.
+          The reference path is a shared hypothesis, not a frozen
+          architecture.</p>
+
+        <h2>What Changed for Me as a Tech Lead</h2>
+
+        <p>Previously, when I saw three engineers, the natural question was:</p>
+
+        <blockquote>
+          <p>How do we split the system into three pieces so everyone can start
+            coding?</p>
+        </blockquote>
+
+        <p>Now I am more likely to ask:</p>
+
+        <blockquote>
+          <p>Which decisions can actually be parallelized, and which ones need
+            convergence first?</p>
+        </blockquote>
+
+        <p>AI reduces the cost of implementation. It does not reduce the
+          coupling between architectural decisions that depend on the same
+          workflow and state model.</p>
+
+        <p>For a given reference path, the workflow, shared state, downstream
+          assumptions, and system boundary still need one coherent answer.</p>
+
+        <p>That suggests a useful pattern for short-cycle, high-uncertainty
+          engineering work:</p>
+
+        <blockquote>
+          <p><strong>Make end-to-end convergence ownership explicit first.
+            Distribute implementation ownership once the reference path is
+            coherent.</strong></p>
+        </blockquote>
+
+        <p>AI is also allowing one engineer to work across a larger technical
+          surface. That may gradually shift the natural unit of ownership from
+          frontend components, backend services, and algorithm modules toward
+          workflows, capabilities, and outcomes.</p>
+
+        <p>Specialists do not become less important. Their work becomes easier
+          to integrate when everyone is extending the same coherent system
+          rather than independently interpreting an unfinished architecture.</p>
+
+        <p>The main lesson I took away from this project was:</p>
+
+        <blockquote>
+          <p><strong>When coding gets faster, team throughput increasingly
+            depends on how quickly we can turn distributed uncertainty into a
+            coherent, executable system.</strong></p>
+        </blockquote>
+
+        <p>Implementation can increasingly happen in parallel. Architecture
+          still has to converge.</p>
+      </section>
+    </div>
+    <script src="../javascripts/scale.fix.js"></script>
+  </body>
+</html>
