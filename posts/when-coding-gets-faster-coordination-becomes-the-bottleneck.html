@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>When Coding Gets Faster, Coordination Becomes the Bottleneck | Tsung-Yen Tsai</title>
     <meta name="description"
-      content="How AI-assisted development shifts the bottleneck from local implementation to architectural convergence in small engineering teams.">
+      content="How AI-assisted development shifts the bottleneck toward decisions about workflow, scope, and optimization in small engineering teams.">
     <link rel="stylesheet" href="../stylesheets/styles.css">
     <link rel="stylesheet" href="../stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width">
@@ -32,8 +32,9 @@
       </footer>
       <section>
         <h1>When Coding Gets Faster, Coordination Becomes the Bottleneck</h1>
-        <p><em>Why small AI-assisted teams may need to converge on one
-          end-to-end workflow before splitting implementation.</em></p>
+        <p><em>Why small AI-assisted teams may need to converge on workflow,
+          scope, and objectives before splitting
+          implementation.</em></p>
         <p><small>September 2026 · Tsung-Yen Tsai</small></p>
 
         <p>Three engineers can be coding in parallel while the project itself
@@ -133,6 +134,48 @@ Downstream Generation</code></pre>
 
         <p>For this phase, the end-to-end owner's first job was not feature
           maximization. It was uncertainty reduction.</p>
+
+        <h2>The Owner Also Decides What to Optimize</h2>
+
+        <p>The same pattern appeared when routing latency became visible in the
+          demo.</p>
+
+        <p>An initial review surfaced a broad set of reasonable options:
+          parallel routing, parameter optimization, richer multi-route
+          orchestration, coarse-to-fine search, or a compiled implementation.
+          None of them was inherently wrong. But they answered a larger
+          question than the demo required.</p>
+
+        <p>The immediate objective was narrower. We needed fixed preferred
+          heights to produce visibly different routes, with requests processed
+          sequentially and committed in a predictable order. We did not yet
+          need a general routing optimizer. So we deferred parallelism and
+          parameter search and profiled the single-route A* implementation
+          first.</p>
+
+        <p>The profile pointed somewhere less ambitious but more useful:
+          repeated neighbor conversion and validation, blocked-cell lookup, and
+          premature path reconstruction inside the Python hot loop. We reduced
+          those costs without changing the search semantics.</p>
+
+        <p>In one fixed demo workload, total A* candidate-search time fell from
+          about 1.96 seconds to about 0.33 seconds—roughly 6x—while the number
+          of expanded states remained unchanged. The search was not faster
+          because it explored less; each expansion became cheaper.</p>
+
+        <p>In a later run under an updated demo configuration—not a
+          continuation of the same benchmark—the bottleneck had shifted. Scene
+          construction and per-route occupancy-mask generation now dominated
+          the remaining runtime rather than A*.</p>
+
+        <blockquote>
+          <p>AI is good at searching a solution space. The engineer still has
+            to decide which solution space is worth searching.</p>
+        </blockquote>
+
+        <p>The end-to-end owner's job was therefore not only to connect
+          boundaries or cut scope. It was also to define the objective well
+          enough that the team optimized the right thing.</p>
 
         <h2>Workflow Semantics Before Stable Contracts</h2>
 
@@ -246,8 +289,21 @@ Downstream Generation</code></pre>
           coupling between architectural decisions that depend on the same
           workflow and state model.</p>
 
-        <p>For a given reference path, the workflow, shared state, downstream
-          assumptions, and system boundary still need one coherent answer.</p>
+        <p>The decisions I was trying to keep coherent fell into three
+          groups:</p>
+
+        <pre><code>Boundary
+→ How should the system be divided?
+
+Scope
+→ Which complexity can wait?
+
+Objective
+→ What are we actually optimizing?</code></pre>
+
+        <p>AI can move quickly once these are defined. It cannot decide whether
+          the broadest technically interesting solution is the one worth
+          building now.</p>
 
         <p>That suggests a useful pattern for short-cycle, high-uncertainty
           engineering work:</p>
