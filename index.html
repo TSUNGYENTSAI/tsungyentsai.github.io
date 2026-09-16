@@ -4,86 +4,94 @@
     <meta charset="utf-8">
     <title>Tsung-Yen Tsai | 蔡宗諺</title>
     <meta name="description" content="Tsung-Yen Tsai — systems-oriented engineer working across robotics, simulation, and optimization for physical-world automation.">
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body>
+  <body class="home-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="wrapper">
-      <header>
-        <ul>
-          <li><a href="#about">About</a></li>
-          <li><a href="#work">Selected Work</a></li>
-          <li><a href="#writing">Writing</a></li>
-          <li><a href="career.html">Career &amp; Education</a></li>
-        </ul>
+      <header class="site-header">
+        <a class="site-name" href="index.html" aria-label="Tsung-Yen Tsai — home">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#work">Selected Work</a></li>
+            <li><a href="#writing">Writing</a></li>
+            <li><a href="career.html">Career &amp; Education</a></li>
+          </ul>
+        </nav>
       </header>
-      <footer>
-        <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">
-          <i class="fab fa-linkedin"></i>
-        </a>
-        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">
-          <i class="fab fa-github"></i>
-        </a>
-        <a href="mailto:tsungyentsai.work@gmail.com">
-          <i class="fas fa-envelope"></i>
-        </a>
+      <main id="main-content" tabindex="-1">
+        <section class="intro" aria-labelledby="about">
+          <h1 id="about">Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></h1>
+
+          <p class="intro-statement">I'm a systems-oriented engineer working across robotics, simulation,
+            optimization, and infrastructure for physical-world automation. I work
+            on turning messy physical-world problems into structured engineering
+            workflows — with clear abstraction, verification, and decision
+            logic.</p>
+
+          <p>Currently at MetAI in Taipei, building rule-driven verification and
+            optimization workflows for semiconductor facility planning. Before
+            that: fleet management and discrete-event simulation for high-density
+            warehouse automation, and hybrid simulation for AMR field
+            deployment. More on the <a href="career.html">career page</a>.</p>
+
+        </section>
+
+        <section class="home-section" aria-labelledby="work">
+          <h2 id="work">Selected Work</h2>
+          <ul class="work-list">
+            <li><strong>Semiconductor facility planning</strong><span class="work-description">rule-driven
+              verification, constrained placement, and 3D routing workflows.</span></li>
+            <li><strong>AS/RS automation</strong><span class="work-description">modular-monolith FMS and DES
+              for storage/retrieval strategy comparison.</span></li>
+            <li><strong>AMR deployment</strong><span class="work-description">hybrid simulation, field-log
+              reproduction, and MAPF-based route planning.</span></li>
+          </ul>
+
+        </section>
+
+        <section class="home-section writing-section" aria-labelledby="writing">
+          <h2 id="writing">Writing</h2>
+          <div class="writing-collections">
+          <div class="writing-collection">
+            <h3>Robotics Systems in Practice</h3>
+            <p class="writing-collection-description">Engineering notes on
+              simulation, fleet control, deployment, and validation, drawn from
+              real robotics systems.</p>
+            <ul>
+              <li><a href="posts/built-for-simulation-not-visualization.html">
+                Built for Simulation, Not Visualization</a><time datetime="2026-07">Jul 2026</time></li>
+              <li><a href="posts/what-is-your-simulation-actually-testing.html">
+                What Is Your Simulation Actually Testing?</a><time datetime="2026-08">Aug 2026</time></li>
+              <li><a href="posts/same-worlds-different-decisions.html">
+                Same Worlds, Different Decisions</a><time datetime="2026-08">Aug 2026</time></li>
+            </ul>
+          </div>
+          <div class="writing-collection">
+            <h3>AI-Assisted Engineering in Practice</h3>
+            <p class="writing-collection-description">Engineering notes on
+              architecture, ownership, and coordination when AI makes local
+              implementation cheaper.</p>
+            <ul>
+              <li><a href="posts/when-coding-gets-faster-coordination-becomes-the-bottleneck.html">
+                When Coding Gets Faster, Coordination Becomes the Bottleneck</a><time datetime="2026-09">Sep 2026</time></li>
+            </ul>
+          </div>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="Contact links">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
       </footer>
-      <section>
-        <h1 id="about">Tsung-Yen Tsai | 蔡宗諺</h1>
-
-        <p>I'm a systems-oriented engineer working across robotics, simulation,
-          optimization, and infrastructure for physical-world automation. I work
-          on turning messy physical-world problems into structured engineering
-          workflows — with clear abstraction, verification, and decision
-          logic.</p>
-
-        <p>Currently at MetAI in Taipei, building rule-driven verification and
-          optimization workflows for semiconductor facility planning. Before
-          that: fleet management and discrete-event simulation for high-density
-          warehouse automation, and hybrid simulation for AMR field
-          deployment. More on the <a href="career.html">career page</a>.</p>
-
-        <h2 id="work">Selected Work</h2>
-        <ul>
-          <li><strong>Semiconductor facility planning</strong> — rule-driven
-            verification, constrained placement, and 3D routing workflows.</li>
-          <li><strong>AS/RS automation</strong> — modular-monolith FMS and DES
-            for storage/retrieval strategy comparison.</li>
-          <li><strong>AMR deployment</strong> — hybrid simulation, field-log
-            reproduction, and MAPF-based route planning.</li>
-        </ul>
-
-        <h2 id="writing">Writing</h2>
-        <div class="writing-collection">
-          <h3>Robotics Systems in Practice</h3>
-          <p class="writing-collection-description">Engineering notes on
-            simulation, fleet control, deployment, and validation, drawn from
-            real robotics systems.</p>
-          <ul>
-            <li><a href="posts/built-for-simulation-not-visualization.html">
-              Built for Simulation, Not Visualization</a> &middot; Jul 2026</li>
-            <li><a href="posts/what-is-your-simulation-actually-testing.html">
-              What Is Your Simulation Actually Testing?</a> &middot; Aug 2026</li>
-            <li><a href="posts/same-worlds-different-decisions.html">
-              Same Worlds, Different Decisions</a> &middot; Aug 2026</li>
-          </ul>
-        </div>
-        <div class="writing-collection">
-          <h3>AI-Assisted Engineering in Practice</h3>
-          <p class="writing-collection-description">Engineering notes on
-            architecture, ownership, and coordination when AI makes local
-            implementation cheaper.</p>
-          <ul>
-            <li><a href="posts/when-coding-gets-faster-coordination-becomes-the-bottleneck.html">
-              When Coding Gets Faster, Coordination Becomes the Bottleneck</a>
-              &middot; Sep 2026</li>
-          </ul>
-        </div>
-      </section>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
   </body>
 </html>
