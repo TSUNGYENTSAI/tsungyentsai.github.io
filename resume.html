@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsung-Yen Tsai - general</title>
+  <style>
+
+    :root {
+      --ink: #111111;
+      --muted: #666666;
+      --line: #9b9b9b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #eeeeec;
+      color: var(--ink);
+      font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12.1px;
+      line-height: 1.36;
+    }
+
+    .page {
+      width: 8.27in;
+      min-height: 11.69in;
+      margin: 28px auto;
+      padding: 0.36in 0.46in;
+      background: #ffffff;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: start;
+      margin-bottom: 13px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .name-zh {
+      margin-left: 18px;
+      font-size: 24px;
+      font-weight: 900;
+      white-space: nowrap;
+      font-family: "Heiti TC", "PingFang TC", "Arial Unicode MS", sans-serif;
+    }
+
+    .contact {
+      display: grid;
+      gap: 4px;
+      min-width: 220px;
+      font-style: normal;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .contact-row {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .contact-icon {
+      color: #111;
+      font-weight: 900;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .summary {
+      margin: 0 0 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+      font-size: 12.9px;
+      color: #2d2d2d;
+    }
+
+    section { margin-top: 12px; }
+
+    .section-title {
+      margin: 0 0 7px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .experience { margin: 0 0 10px; }
+
+    .experience-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .experience-title {
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .experience-meta {
+      color: var(--muted);
+      font-style: italic;
+      white-space: nowrap;
+      font-size: 11.7px;
+    }
+
+    .tech {
+      margin-top: 2px;
+      color: #777777;
+      font-size: 11.7px;
+    }
+
+    .role-list {
+      margin-top: 2px;
+    }
+
+    .role-item {
+      position: relative;
+    }
+
+    .role-item + .role-item {
+      margin-top: 5px;
+    }
+
+    .role-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .role-title {
+      font-size: 13.4px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .role-meta {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .role-item .resume-bullets {
+      margin-top: 4px;
+    }
+
+    .experience-compact {
+      margin-top: 1px;
+    }
+
+    .compact-experience-title {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 13.2px;
+      line-height: 1.25;
+    }
+
+    ul.resume-bullets {
+      margin: 5px 0 0 19px;
+      padding: 0;
+    }
+
+    .resume-bullets li {
+      margin: 3px 0;
+      padding-left: 2px;
+    }
+
+    .resume-bullets li::marker {
+      font-size: 0.72em;
+    }
+
+    .education-entry {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      margin: 5px 0;
+    }
+
+    .school {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .degree,
+    .thesis {
+      color: var(--muted);
+      font-size: 11.7px;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      body { background: #ffffff; }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 0.34in 0.45in;
+        box-shadow: none;
+      }
+      section { break-inside: avoid; }
+    }
+  </style>
+
+<style>
+  @font-face { font-family: Lato; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/fonts/Lato-Regular.ttf') format('truetype'); }
+  @font-face { font-family: Lato; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/fonts/Lato-Bold.ttf') format('truetype'); }
+  @font-face { font-family: Lato; font-style: italic; font-weight: 400; font-display: swap; src: url('assets/fonts/Lato-Italic.ttf') format('truetype'); }
+  body { background: #FCFCFA; }
+  .resume-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; max-width: 794px; margin: 20px auto 0; padding: 0 16px 16px; border-bottom: 1px solid #CCD3D0; font-size: 14px; }
+  .resume-toolbar a { display: inline-flex; align-items: center; min-height: 44px; color: #356B5B; text-decoration: none; }
+  .resume-toolbar a:hover { text-decoration: underline; }
+  .resume-toolbar a:focus-visible { outline: 2px solid #356B5B; outline-offset: 3px; }
+  .resume-toolbar .download-pdf { padding: 8px 16px; border: 1px solid #A8BFB2; border-radius: 4px; background: #EFF5F2; }
+  .page { max-width: calc(100% - 32px); box-shadow: none; border: 1px solid #CCD3D0; }
+  @media (max-width: 760px) {
+    body { font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+    .page { width: auto; min-height: 0; margin: 20px 16px; padding: 28px 20px; }
+    .topbar { grid-template-columns: 1fr; gap: 18px; }
+    h1 { font-size: clamp(24px, 6vw, 34px); }
+    .name-zh { font-size: 20px; margin-left: 8px; }
+    .contact { min-width: 0; font-size: 13px; }
+    .summary { font-size: 15px; }
+    section { margin-top: 24px; }
+    .section-title { font-size: 18px; margin-bottom: 12px; }
+    .experience { margin-bottom: 24px; }
+    .experience-head, .role-head, .education-entry { grid-template-columns: 1fr; gap: 4px; }
+    .experience-title, .school { font-size: 18px; }
+    .role-list, .role-item + .role-item { margin-top: 12px; }
+    .role-title { font-size: 15px; }
+    .experience-meta, .role-meta { white-space: normal; font-size: 13px; }
+    .tech, .degree, .thesis { font-size: 13px; }
+    .resume-bullets li { margin-block: 8px; }
+    .compact-experience-title { flex-wrap: wrap; font-size: 15px; }
+    .education-entry + .education-entry { margin-top: 18px; }
+  }
+  @media print {
+    .resume-toolbar { display: none; }
+    .page { max-width: none; border: 0; }
+  }
+</style>
+</head>
+<body>
+    <nav class="resume-toolbar" aria-label="履歷導覽" lang="zh-Hant">
+      <a href="index.html">← 回到首頁</a>
+      <a class="download-pdf" href="assets/resume/tsung-yen-tsai-general.pdf" download="Tsung-Yen Tsai - General.pdf">下載 PDF</a>
+    </nav>
+
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>Tsung-Yen Tsai<span class="name-zh">蔡 宗 諺</span></h1>
+      </div>
+      <address class="contact">
+        <div class="contact-row"><span class="contact-icon">✉</span><span>tsungyentsai.work@gmail.com</span></div>
+        <div class="contact-row"><span class="contact-icon">☎</span><span>+886 975-190-368</span></div>
+        <div class="contact-row"><span class="contact-icon">in</span><span>linkedin.com/in/tsungyentsai</span></div>
+        <div class="contact-row"><span class="contact-icon">🌐</span><span>tsungyentsai.github.io</span></div>
+      </address>
+    </header>
+
+    <p class="summary">Physical AI and robotics systems engineer with 4+ years building simulation, planning, and optimization systems for industrial automation. Turns physical-world constraints into verifiable workflows, with current technical-lead work across 3D hookup routing and semiconductor layout planning.
+</p>
+
+    <section>
+      <h2 class="section-title">Experience</h2>
+      <article class="experience experience-company">
+  <div class="experience-head">
+    <div class="experience-title">MetAI</div>
+    <div class="experience-meta">Taipei, Taiwan | Apr 2025 - Present</div>
+  </div>
+  <div class="role-list"><div class="role-item">
+  <div class="role-head">
+    <div class="role-title">Technical Lead, Hookup &amp; Layout Engines</div>
+    <div class="role-meta">Jul 2026 - Present</div>
+  </div>
+  <div class="tech">Python, Taichi, CUDA, USD, Optuna, PyTorch, Isaac Sim, Omniverse</div>
+  <ul class="resume-bullets"><li>Led productization of a 3D industrial routing foundation, designing immutable layered voxel-world and request-specific routing-mask artifacts with Taichi CUDA occupancy processing, deterministic graph search, and reproducible parameter optimization.
+</li><li>Defined the product architecture and reusable-core / customer-workspace boundary for a semiconductor layout engine spanning domain modeling, deterministic rule verification, and placement workflows.
+</li></ul>
+</div>
+<div class="role-item">
+  <div class="role-head">
+    <div class="role-title">Senior AI Reinforcement Learning Engineer</div>
+    <div class="role-meta">Apr 2025 - Present</div>
+  </div>
+
+  <ul class="resume-bullets"><li>Re-architected the RL training environment for semiconductor tool placement by separating layout data, rule execution, and result rendering, improving reproducibility and reducing layout inspection time by 93%, from about five minutes to 20 seconds.
+</li><li>Built a 0-to-1 3D routing system that turns dense semiconductor layouts and constructability rules into multi-pipe routing candidates for customer and engineering review, treating spatial reasoning as search-and-verify rather than rendering.
+</li></ul>
+</div>
+</div>
+</article>
+<article class="experience experience-company">
+  <div class="experience-head">
+    <div class="experience-title">TAC Dynamics</div>
+    <div class="experience-meta">Taipei, Taiwan | Apr 2024 - Apr 2025</div>
+  </div>
+  <div class="role-list"><div class="role-item">
+  <div class="role-head">
+    <div class="role-title">Senior Robotics Engineer</div>
+
+  </div>
+  <div class="tech">C#, Python, gRPC, Redis, PostgreSQL, DES</div>
+  <ul class="resume-bullets"><li>Co-defined domain boundaries for an AS/RS warehouse automation platform, helping consolidate 150 microservices into 5 core modules and reduce system-wide memory usage by 30%.
+</li><li>Redesigned and implemented the AS/RS fleet-management system as a modular monolith, replacing distributed coordination with in-process communication and shared state to simplify development and latency-sensitive robot control; validated the system through a month-long hardware integration test with real payload operations.
+</li><li>Owned the core FMS integration for an AMR customer deployment, defining the MES interface and integrating the customer&#39;s production system with the AMR fleet through successful on-site deployment.
+</li><li>Built a discrete-event simulation platform modeling order flow, inventory, container allocation, stack locking, reshuffle, and retrieval logic, enabling randomized comparison of warehouse strategies before full hardware and real-time simulation were available.
+</li></ul>
+</div>
+</div>
+</article>
+<article class="experience experience-company">
+  <div class="experience-head">
+    <div class="experience-title">FARobot</div>
+    <div class="experience-meta">Taipei, Taiwan | Feb 2022 - Mar 2024</div>
+  </div>
+  <div class="role-list"><div class="role-item">
+  <div class="role-head">
+    <div class="role-title">Algorithm Engineer</div>
+
+  </div>
+  <div class="tech">C++17, Python, ROS 2, Unity</div>
+  <ul class="resume-bullets"><li>Built a hybrid FMS-and-simulation validation platform supporting 100+ simulated AMRs and multi-day continuous reliability testing, so field changes could be reproduced and de-risked before deployment.
+</li><li>Improved throughput 40%+ at a panel-manufacturing AMR site by reconstructing operations from field logs, testing changes in simulation, and validating releases on site with the deployment team.
+</li><li>Developed and deployed a MAPF-based route planner for a tight multi-robot environment, separating planning from execution and adding localization margins for stable real-field operation.
+</li></ul>
+</div>
+</div>
+</article>
+<article class="experience experience-compact">
+  <div class="experience-head">
+    <div class="compact-experience-title"><strong>Vanderlande</strong><span>·</span>Robotics Engineer Intern</div>
+    <div class="experience-meta">Veghel, Netherlands | Jul 2021 - Sep 2021</div>
+  </div>
+</article>
+
+    </section>
+
+    <section>
+      <h2 class="section-title">Education</h2>
+      <div class="education-entry">
+  <div>
+    <div class="school">Eindhoven University of Technology</div>
+    <div class="degree">M.Sc. in Mechanical Engineering, Control Systems Technology</div>
+    <div class="thesis"><em>Thesis:</em> Situational-Aware Motion Planning with a Shared Semantic World Model</div>
+  </div>
+  <div class="experience-meta">Eindhoven, Netherlands | 2019 - 2021</div>
+</div>
+<div class="education-entry">
+  <div>
+    <div class="school">National Taiwan University</div>
+    <div class="degree">B.S. in Mechanical Engineering</div>
+
+  </div>
+  <div class="experience-meta">Taipei, Taiwan | 2014 - 2018</div>
+</div>
+
+    </section>
+  </main>
+</body>
+</html>

@@ -1,97 +1,158 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="utf-8">
-    <title>Tsung-Yen Tsai | 蔡宗諺</title>
-    <meta name="description" content="Tsung-Yen Tsai — systems-oriented engineer working across robotics, simulation, and optimization for physical-world automation.">
+    <title>蔡宗諺 Tsung-Yen Tsai | Robotics / Simulation / Physical AI</title>
+    <meta name="description" content="蔡宗諺 Tsung-Yen Tsai，做過多機器人部署、倉儲自動化與半導體設施規劃。分享關於模擬、驗證與工程判斷的思考。">
     <link rel="stylesheet" href="stylesheets/styles.css?v=20260916-neutral">
+    <link rel="stylesheet" href="stylesheets/homepage.css?v=20261007-hero-fusion">
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#FCFCFA">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body class="home-page">
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <div class="wrapper">
-      <header class="site-header">
-        <a class="site-name" href="index.html" aria-label="Tsung-Yen Tsai — home">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
-        <nav aria-label="Main navigation">
-          <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#work">Selected Work</a></li>
-            <li><a href="#writing">Writing</a></li>
-            <li><a href="career.html">Career &amp; Education</a></li>
-          </ul>
-        </nav>
-      </header>
-      <main id="main-content" tabindex="-1">
-        <section class="intro" aria-labelledby="about">
-          <h1 id="about">Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></h1>
+    <a class="skip-link" href="#main-content">跳到主要內容</a>
+    <header class="home-header wrap">
+      <a class="home-name" href="index.html"><span lang="en">Tsung-Yen Tsai</span><span>蔡宗諺</span></a>
+      <nav aria-label="主要導覽">
+        <a href="#judgments">公開判斷</a>
+        <a href="#thinking">最近在想</a>
+        <a href="#career">經歷</a>
+        <a href="#about">關於</a>
+      </nav>
+    </header>
 
-          <p class="intro-statement">I'm a systems-oriented engineer working across robotics, simulation,
-            optimization, and infrastructure for physical-world automation. I work
-            on turning messy physical-world problems into structured engineering
-            workflows — with clear abstraction, verification, and decision
-            logic.</p>
-
-          <p>Currently at MetAI in Taipei, building rule-driven verification and
-            optimization workflows for semiconductor facility planning. Before
-            that: fleet management and discrete-event simulation for high-density
-            warehouse automation, and hybrid simulation for AMR field
-            deployment. More on the <a href="career.html">career page</a>.</p>
-
-        </section>
-
-        <section class="home-section" aria-labelledby="work">
-          <h2 id="work">Selected Work</h2>
-          <ul class="work-list">
-            <li><strong>Semiconductor facility planning</strong><span class="work-description">rule-driven
-              verification, constrained placement, and 3D routing workflows.</span></li>
-            <li><strong>AS/RS automation</strong><span class="work-description">modular-monolith FMS and DES
-              for storage/retrieval strategy comparison.</span></li>
-            <li><strong>AMR deployment</strong><span class="work-description">hybrid simulation, field-log
-              reproduction, and MAPF-based route planning.</span></li>
-          </ul>
-
-        </section>
-
-        <section class="home-section writing-section" aria-labelledby="writing">
-          <h2 id="writing">Writing</h2>
-          <div class="writing-collections">
-          <div class="writing-collection">
-            <h3>Robotics Systems in Practice</h3>
-            <p class="writing-collection-description">Engineering notes on
-              simulation, fleet control, deployment, and validation, drawn from
-              real robotics systems.</p>
-            <ul>
-              <li><a href="posts/built-for-simulation-not-visualization.html">
-                Built for Simulation, Not Visualization</a><time datetime="2026-07">Jul 2026</time></li>
-              <li><a href="posts/what-is-your-simulation-actually-testing.html">
-                What Is Your Simulation Actually Testing?</a><time datetime="2026-08">Aug 2026</time></li>
-              <li><a href="posts/same-worlds-different-decisions.html">
-                Same Worlds, Different Decisions</a><time datetime="2026-08">Aug 2026</time></li>
-            </ul>
+    <main id="main-content" tabindex="-1" class="wrap">
+      <section class="hero" id="about" aria-labelledby="hero-name">
+        <div class="hero-copy">
+          <h1 id="hero-name" class="hero-name">蔡宗諺</h1>
+          <p class="hero-role" lang="en">Robotics / Simulation / Physical AI</p>
+          <p class="hero-scope">過去幾年，做過多機器人部署、倉儲自動化與半導體設施規劃。</p>
+          <p class="hero-intro">題目一直在變，但反覆處理的都是同一類問題：<strong>怎麼把複雜的物理世界抽象成可以驗證、比較與改善的工程問題。</strong></p>
+          <div class="hero-meta">
+            <span lang="en">New Taipei, Taiwan</span>
+            <nav aria-label="個人連結">
+              <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener" lang="en">LinkedIn</a>
+              <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener" lang="en">GitHub</a>
+              <a href="resume.html" lang="en" aria-label="Resume — General 履歷">Resume</a>
+              <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+            </nav>
           </div>
-          <div class="writing-collection">
-            <h3>AI-Assisted Engineering in Practice</h3>
-            <p class="writing-collection-description">Engineering notes on
-              architecture, ownership, and coordination when AI makes local
-              implementation cheaper.</p>
-            <ul>
-              <li><a href="posts/when-coding-gets-faster-coordination-becomes-the-bottleneck.html">
-                When Coding Gets Faster, Coordination Becomes the Bottleneck</a><time datetime="2026-09">Sep 2026</time></li>
-            </ul>
+        </div>
+        <figure class="hero-portrait">
+          <img src="assets/images/yen-cutout.png" alt="海邊的個人插畫肖像" width="1541" height="1021" fetchpriority="high" decoding="async">
+        </figure>
+      </section>
+
+      <section class="career-strip" id="career" aria-labelledby="career-heading">
+        <div class="career-heading">
+          <h2 id="career-heading">經歷</h2>
+        </div>
+        <div class="career-scroll" role="region" aria-label="學歷與經歷時間軸，可左右捲動" tabindex="0">
+          <ol class="career-timeline">
+            <li><time>2014–2018</time><h3>台灣大學</h3><p>機械工程</p></li>
+            <li><time>2019–2021</time><h3 lang="en">TU/e</h3><p>控制與機器人</p></li>
+            <li><time>2021</time><h3 lang="en">Vanderlande</h3><p>機器人系統實習</p></li>
+            <li><time>2022–2024</time><h3 lang="en">FARobot</h3><p>多機器人系統</p></li>
+            <li><time>2024–2025</time><h3 lang="en">TAC Dynamics</h3><p>自動化系統</p></li>
+            <li class="current"><time>2025–</time><h3 lang="en">MetAI</h3><p lang="en">Physical AI</p></li>
+          </ol>
+        </div>
+        <details class="career-details" id="career-details">
+          <summary>完整經歷 <span class="career-chevron" aria-hidden="true">⌄</span></summary>
+          <div class="career-history" id="career-history">
+            <div>
+              <h3 class="history-heading">工作經歷</h3>
+              <ol class="history-list">
+                <li>
+                  <div class="history-title"><h4 lang="en">MetAI</h4><span>2025.04–至今</span></div>
+                  <p class="history-role" lang="en">Technical Lead, Hookup &amp; Layout Engines<br>Senior AI Reinforcement Learning Engineer</p>
+                  <p>半導體設施規劃中的規則驗證、設備配置與 3D 管線路由；設計可重用的系統基礎與產品邊界。</p>
+                </li>
+                <li>
+                  <div class="history-title"><h4 lang="en">TAC Dynamics</h4><span>2024.04–2025.04</span></div>
+                  <p class="history-role" lang="en">Senior Robotics Engineer</p>
+                  <p>重新設計與實作倉儲自動化的車隊管理系統，建立離散事件模擬以比較倉儲策略，並負責另一個 AMR 客戶部署中的核心系統整合。</p>
+                </li>
+                <li>
+                  <div class="history-title"><h4 lang="en">FARobot</h4><span>2022.02–2024.03</span></div>
+                  <p class="history-role" lang="en">Algorithm Engineer</p>
+                  <p>多機器人系統的模擬驗證、現場部署與路徑規劃；透過現場紀錄重現問題，在模擬與現場驗證改動。</p>
+                </li>
+                <li>
+                  <div class="history-title"><h4 lang="en">Vanderlande</h4><span>2021.07–2021.09</span></div>
+                  <p class="history-role" lang="en">Robotics Engineer Intern · Veghel, Netherlands</p>
+                </li>
+              </ol>
+            </div>
+            <div>
+              <h3 class="history-heading">教育</h3>
+              <ol class="history-list">
+                <li>
+                  <div class="history-title"><h4 lang="en">Eindhoven University of Technology</h4><span>2019–2021</span></div>
+                  <p class="history-role" lang="en">M.Sc. in Mechanical Engineering<br>Control Systems Technology</p>
+                  <p lang="en">Thesis: Situational-Aware Motion Planning with a Shared Semantic World Model.</p>
+                </li>
+                <li>
+                  <div class="history-title"><h4>國立臺灣大學</h4><span>2014–2018</span></div>
+                  <p class="history-role" lang="en">B.S. in Mechanical Engineering</p>
+                </li>
+              </ol>
+            </div>
           </div>
+        </details>
+      </section>
+
+      <section class="judgments" id="judgments" aria-labelledby="judgments-heading">
+        <div class="judgments-intro">
+          <div>
+            <h2 id="judgments-heading">公開判斷</h2>
+            <p class="judgments-purpose">把工程判斷留下來，也把形成它的推理留下來。</p>
           </div>
-        </section>
-      </main>
-      <footer class="site-footer">
-        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
-        <nav aria-label="Contact links">
-          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
-          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
-        </nav>
-      </footer>
-    </div>
+          <p class="judgments-context">從實際工作裡反覆形成、目前認為成立的看法。完整文章保留推理脈絡；之後出現更好的證據，也可以繼續修正。</p>
+        </div>
+        <article class="judgment" aria-labelledby="simulation-heading">
+          <div class="judgment-label"><span>01</span><span lang="en">SIMULATION</span></div>
+          <div class="judgment-content">
+            <div class="judgment-copy">
+              <h3 id="simulation-heading">模擬要多逼真，<br>取決於它要支持什麼判斷。</h3>
+              <p>模擬不需要重現所有現實細節。真正重要的是先定義要回答的工程問題，再決定哪些機制必須保留、哪些可以抽掉，以及實驗結果究竟能支持什麼結論。</p>
+            </div>
+            <aside class="related" id="writing" aria-labelledby="related-heading">
+              <h4 id="related-heading">延伸文章</h4>
+              <ul>
+                <li><a href="posts/built-for-simulation-not-visualization.html" lang="en">Built for Simulation, Not Visualization</a><time datetime="2026-07">2026.07</time></li>
+                <li><a href="posts/what-is-your-simulation-actually-testing.html" lang="en">What Is Your Simulation Actually Testing?</a><time datetime="2026-08">2026.08</time></li>
+                <li><a href="posts/same-worlds-different-decisions.html" lang="en">Same Worlds, Different Decisions</a><time datetime="2026-08">2026.08</time></li>
+              </ul>
+            </aside>
+          </div>
+        </article>
+      </section>
+
+      <section class="thinking" id="thinking" aria-labelledby="thinking-heading">
+        <div class="thinking-intro">
+          <p class="kicker" lang="en">CURRENT THINKING</p>
+          <h2 id="thinking-heading">最近在想</h2>
+          <p>還沒有整理成完整答案，先把正在追的問題留下來。</p>
+        </div>
+        <ul class="thought-list">
+          <li><time datetime="2026-10">2026.10</time><p>在最佳化以前，究竟要先定義哪些「正確性」與評估條件？</p></li>
+          <li><time datetime="2026-10">2026.10</time><p>模擬裡的成功，什麼時候才足以支持真實部署？</p></li>
+          <li><time datetime="2026-10">2026.10</time><p>如果實驗根本沒有走到關鍵狀態，多跑幾次有意義嗎？</p></li>
+          <li><time datetime="2026-09">2026.09</time><p>Physical AI 真正改變的，是運算需求，還是從開發、驗證到部署的整個流程？</p></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="home-footer wrap">
+      <div><p class="footer-name"><span lang="en">Tsung-Yen Tsai</span> · 蔡宗諺</p><p class="footer-role" lang="en">Robotics · Simulation · Physical AI · Engineering Systems</p></div>
+      <nav aria-label="聯絡方式">
+        <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener" lang="en">LinkedIn</a>
+        <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener" lang="en">GitHub</a>
+        <a href="resume.html" lang="en" aria-label="Resume — General 履歷">Resume</a>
+        <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+      </nav>
+    </footer>
   </body>
 </html>
