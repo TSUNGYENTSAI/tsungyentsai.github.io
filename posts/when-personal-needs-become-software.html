@@ -29,80 +29,86 @@
         <p><em>從 MacWhisper 到 Recording Library，一個透過 Codex 將個人需求轉化成小工具的 Side Project。</em></p>
         <p><small><time datetime="2026-11-07">2026 年 11 月 7 日</time> · 蔡宗諺</small></p>
 
-        <p>如果你可以很容易地修改一個 App，讓它完全符合自己的工作方式，你還會繼續忍受那些每天都在重複的麻煩嗎？</p>
+        <p>如果我們可以很容易地修改一個 App，讓它完全符合自己的工作方式，還需要繼續忍受那些每天都在重複的麻煩嗎？</p>
 
-        <p>最近我用 Codex 做了一個 macOS 小工具：<a href="https://github.com/TSUNGYENTSAI/recording-library">Recording Library</a>，讓我開始重新思考 AI Coding 帶來的改變。</p>
+        <p>最近透過 Codex 開發了一個 macOS 小工具：<a href="https://github.com/TSUNGYENTSAI/recording-library">Recording Library</a>。這段經驗也讓我重新思考，AI Coding 究竟正在改變什麼。</p>
 
         <h2>從一個很個人的需求開始</h2>
 
-        <p>我平常有錄音的習慣，不論是工作會議、技術討論，還是突然想到的想法。</p>
+        <p>工作會議、技術討論，甚至突然想到的想法，平常都有錄音保存的習慣。</p>
 
-        <p>過去我會使用 MacWhisper 將錄音轉成逐字稿，再貼到 ChatGPT 裡討論。這個流程其實運作得不錯，但隨著錄音越來越多，開始遇到一些麻煩。</p>
+        <p>原本的流程是先錄音，再使用 MacWhisper 轉成逐字稿，最後貼到 GPT 裡討論。雖然 MacWhisper 本身也有錄音功能，但過去沒有使用過。</p>
 
-        <p>錄音檔和逐字稿分散在不同地方，不容易搜尋與管理。轉錄完成後，原始音檔要不要留？逐字稿修改後，原稿還需要保存嗎？每次錄音、轉錄、整理再複製到 GPT，也需要經過好幾個步驟。</p>
+        <p>這個流程其實運作得不錯，但隨著錄音越來越多，問題逐漸浮現。</p>
 
-        <p>我開始想，有沒有可能把這些事情整合成一個簡單的 App？</p>
+        <p>錄音檔與逐字稿分散在不同地方，不容易搜尋與管理。轉錄完成後，原始音檔要不要保留？逐字稿修改後，原稿還需要保存嗎？每次錄音、轉錄、整理，再複製到 GPT，也需要經過好幾個步驟。</p>
 
-        <p>一開始，我先找了現有工具與開源專案，想看看能不能直接使用。但沒有找到完全符合自己工作流程的方案，於是決定試著用 Codex 做一個。</p>
+        <p>如果能把這些事情整合成一個簡單的 App，應該會方便很多。</p>
+
+        <p>開始之前，先研究了現有工具與開源專案，希望能直接找到符合需求的方案。但沒有找到完全適合自己工作流程的選擇，於是決定透過 Codex 動手試試。</p>
 
         <h2>從簡單工具，逐漸長成真正需要的樣子</h2>
 
-        <p>最初的需求很單純：匯入錄音、在本機轉錄、保存逐字稿，並且可以搜尋與複製。</p>
+        <p>最初的需求很單純：匯入錄音、在本機轉錄、保存逐字稿，並提供搜尋與複製功能。</p>
 
-        <p>Codex 幫我研究技術方案，整合 WhisperKit、Core ML、SQLite 等現有工具，做出第一版可以操作的 macOS App。</p>
+        <p>Codex 協助研究技術方案，整合 WhisperKit、Core ML、SQLite 等現有工具，很快就有了第一版可以操作的 macOS App。</p>
 
-        <p>接著，我開始真的使用它。</p>
+        <p>但真正的需求，是在開始使用後才逐漸變得清楚。</p>
 
-        <p>發現錄音拖不進去，就改善匯入與歸檔流程；覺得檔案太多不好整理，就加入本機 Qwen 模型，自動產生標題和分類；想要方便移除錄音，就加入垃圾桶與復原功能。</p>
+        <p>錄音拖不進去，就改善匯入與歸檔流程；檔案越來越多，就加入本機 Qwen 模型，自動產生標題與分類；需要方便移除錄音，就補上垃圾桶與復原功能。</p>
 
-        <p>後來我發現，既然最終目的就是錄音和轉錄，為什麼還需要先使用另一個工具錄音，再匯入 App？</p>
+        <p>後來又想到：既然最終目的就是錄音與轉錄，為什麼還需要先用其他工具錄音，再匯入 App？</p>
 
-        <p>於是又加入直接錄音，甚至支援同時收錄麥克風與系統聲音，讓我戴著耳機開線上會議時，也能錄到雙方的聲音。</p>
+        <p>於是加入直接錄音，甚至整合麥克風與系統聲音，讓戴著耳機開線上會議時，也能同時錄下雙方的聲音。</p>
 
-        <p>整個過程沒有一開始就定義好的完整規格，而是不斷在「提出需求、實作、使用、修改」之間循環。</p>
+        <p>整個過程沒有預先定義好的完整規格，而是不斷在「提出需求、實作、使用、修改」之間循環。</p>
 
-        <p>現在我的流程變得很簡單：<strong>開啟一個 App、按下錄音，完成後等待本地轉錄，就可以直接拿逐字稿和 GPT 展開後續討論。</strong></p>
+        <p>現在只需要開啟一個 App、按下錄音，完成後等待本地轉錄，就可以直接拿逐字稿與 GPT 展開後續討論。</p>
 
         <figure class="article-figure">
-          <a href="https://github.com/TSUNGYENTSAI/recording-library/blob/main/Docs/Media/workflow-zh-TW.gif" target="_blank" rel="noopener" aria-label="在 GitHub 開啟 Recording Library 繁中操作流程 GIF">
+          <a href="https://raw.githubusercontent.com/TSUNGYENTSAI/recording-library/main/Docs/Media/workflow-zh-TW.gif" target="_blank" rel="noopener" aria-label="在 GitHub 開啟 Recording Library 繁中操作流程 GIF">
             <img src="https://raw.githubusercontent.com/TSUNGYENTSAI/recording-library/main/Docs/Media/workflow-zh-TW.gif" alt="Recording Library macOS 介面操作流程：開始錄音、停止保存、轉錄預覽、自動命名、搜尋與管理錄音" loading="lazy" decoding="async">
           </a>
-          <figcaption>Recording Library 操作流程。使用實際 App 介面與虛構示例資料；錄音、轉錄狀態為重播示意，等待時間已縮短。<a href="https://github.com/TSUNGYENTSAI/recording-library/blob/main/Docs/Media/workflow-zh-TW.gif" target="_blank" rel="noopener">查看原始 GIF</a></figcaption>
+          <figcaption>Recording Library 操作流程。使用實際 App 介面與虛構示例資料，部分狀態經過重播，等待時間也已縮短。<a href="https://raw.githubusercontent.com/TSUNGYENTSAI/recording-library/main/Docs/Media/workflow-zh-TW.gif" target="_blank" rel="noopener">點開直接觀看 GIF</a></figcaption>
         </figure>
 
         <h2>AI Coding 不只是讓寫程式變快</h2>
 
-        <p>這個專案的實作全部透過 Codex 完成。我主要負責描述需求、評估方案、操作測試，以及決定接下來要改善什麼。</p>
+        <p>這個專案的程式實作全部透過 Codex 完成。人的工作主要是描述需求、評估方案、實際測試，以及決定哪些功能值得繼續改善。</p>
 
-        <p>但我覺得更有意思的，不是 AI 能寫出多少程式碼。</p>
+        <p>但更有意思的，不是 AI 能寫出多少程式碼。</p>
 
-        <p>Recording Library 並不是從零打造語音辨識模型。它利用已經存在的開源模型、框架與 macOS 系統能力，再將它們整合成符合我需求的工作流程。</p>
+        <p>Recording Library 並沒有從零開發語音辨識模型，而是利用既有的開源模型、框架與 macOS 系統能力，把它們組合成符合個人需求的工作流程。</p>
 
-        <p>我想，未來的個人軟體開發可能會越來越像這樣：不一定每次都需要重新造輪子，而是讓 AI 幫忙尋找既有的輪子、把它們組合起來，再依照自己的需求修改。</p>
+        <p>未來的個人軟體開發，或許會越來越接近這種模式。</p>
 
-        <p>甚至有一天，我們可能不需要特別去「開發一個新 App」，而是直接拿現成的開源工具，告訴 AI 自己希望改變哪個功能、增加哪個工作流程。</p>
+        <p>我們不一定每次都需要重新造輪子，而是可以讓 AI 協助尋找、評估與整合現有工具，再依照自己的需求修改。</p>
 
-        <p>當然，AI 寫出程式碼不代表功能就一定可靠。這次我也遇到耳機錄音的相容性問題；嘗試用小模型修正逐字稿時，還發現它可能刪掉原本重要的語句，因此最後沒有把自動潤稿加入正式流程。</p>
+        <p>甚至不一定需要從頭開發一個新 App。找到合適的開源專案後，直接告訴 AI 希望調整哪些功能、增加什麼工作流程，也可能成為很自然的使用方式。</p>
+
+        <p>當然，AI 寫出程式碼不代表功能一定可靠。</p>
+
+        <p>這次就遇到耳機錄音的相容性問題。另一個例子是嘗試用小模型優化逐字稿，卻發現它可能刪除原本重要的語句，因此最後沒有將自動潤稿加入正式流程。</p>
 
         <p><strong>能夠快速實作，和知道什麼功能值得做、做到什麼程度才足夠，是兩件不同的事。</strong></p>
 
         <h2>什麼需求值得被做成軟體？</h2>
 
-        <p>過去，當一個需求太個人化、使用者太少，或只是想省下每天幾個重複步驟，我們通常不會認真考慮為它開發一套軟體。</p>
+        <p>過去，一個需求如果太個人化、使用者太少，或只是想省下每天幾個重複步驟，通常不值得為此特別開發一套軟體。</p>
 
         <p>因為開發成本可能遠大於它帶來的效益。</p>
 
         <p>但隨著 AI Coding 降低實作與修改的成本，這個判斷標準正在改變。</p>
 
-        <p>也許未來會有更多小工具，不需要服務數萬名使用者，也不需要有完整的商業模式。它只需要確實解決某個人的問題，就已經具有價值。</p>
+        <p>未來也許會出現更多小工具，不需要服務數萬名使用者，也不需要完整的商業模式。只要能確實解決某個人的問題，就已經具有價值。</p>
 
-        <p>而現成軟體也不再只能被動接受。每個人可能都能更容易地把它調整成自己習慣的樣子。</p>
+        <p>我們也不一定只能被動接受現成軟體所提供的功能，而是可能越來越容易依照自己的習慣，修改或組合出真正順手的工具。</p>
 
-        <p>我把 Recording Library 整理成了 <a href="https://github.com/TSUNGYENTSAI/recording-library">GitHub 開源專案</a>，目前仍是 Apple Silicon macOS 的 early preview，安裝需要自行建置與準備模型。</p>
+        <p>這次也把 <a href="https://github.com/TSUNGYENTSAI/recording-library">Recording Library 公開到 GitHub</a>，目前仍是 Apple Silicon macOS 的 early preview，需要自行建置並準備模型。</p>
 
-        <p>它不是什麼突破性的技術，也還稱不上成熟產品。但對我來說，它已經實際改善了每天使用的工作流程。</p>
+        <p>它不是突破性的技術，也還稱不上成熟產品。但對日常工作來說，已經實際改善了原本繁瑣的流程。</p>
 
-        <p>這次最大的收穫是：<strong>AI 不只是讓我們更快開發軟體，也正在改變哪些問題值得被做成軟體。</strong></p>
+        <p><strong>AI 不只是讓軟體開發變快，也正在改變哪些問題值得被做成軟體。</strong></p>
       </main>
       <footer class="site-footer">
         <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
