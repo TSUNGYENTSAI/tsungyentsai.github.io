@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Verification Before Optimization | Tsung-Yen Tsai</title>
+    <meta name="description" content="Why verifying existing engineering designs helps reveal ambiguous rules before optimization—and how one reviewed rule can guide checking and search.">
+    <link rel="canonical" href="https://tsungyentsai.github.io/posts/verification-before-optimization.html">
+    <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="wrapper">
+      <header class="site-header">
+        <a class="site-name" href="../index.html" aria-label="Tsung-Yen Tsai — home">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#writing">Writing</a></li>
+            <li><a href="../index.html#career-history">Career &amp; Education</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <h1>Verification Before Optimization</h1>
+        <p><em>Turning ambiguous engineering rules into executable decision criteria.</em></p>
+        <p><small>November 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>“Keep at least 80 cm between two machines.”</p>
+
+        <p>That sounds precise—until two implementations disagree on whether the same layout passes.</p>
+
+        <p>Are we measuring the gap between simplified machine footprints or the outermost physical parts? Do protruding components count? Does a measured clearance of exactly 80 cm pass?</p>
+
+        <p>These questions may seem minor in a requirement document, but each answer changes which layouts the software considers acceptable. An optimizer can work exactly as designed and still solve a different problem from the one engineers intended.</p>
+
+        <p>Before asking an algorithm to find a better layout, we need to agree on what makes a layout valid.</p>
+
+        <h2>A rule on paper is not yet a rule in software</h2>
+
+        <p>I encountered this problem while working on automated industrial equipment layouts. Checking existing customer layouts against engineering rules exposed differences between the software's interpretation and what engineers expected.</p>
+
+        <p>We were not asking the system to design something new yet. We were checking whether it understood designs that already existed.</p>
+
+        <p>One rule involved maintenance regions around equipment.</p>
+
+        <p>Under the rules used in our layout work, maintenance regions could overlap one another, but they could not overlap another machine's physical body or certain physical obstacles.</p>
+
+        <p>Consider two maintenance regions that overlap without touching either machine body. A checker that treats every overlap as a violation would reject this arrangement—even though it satisfies the maintenance-region rule.</p>
+
+        <p>The geometry calculation is correct. The engineering judgment is not.</p>
+
+        <figure class="article-figure">
+          <img src="../assets/images/maintenance-region-rule.svg" width="960" height="350"
+            alt="Two top-view layout examples. On the left, maintenance zones of machines A and B overlap without intersecting either machine body, which is allowed under the example rule. On the right, the maintenance zone of machine A overlaps the physical body of machine B, which violates the rule."
+            loading="lazy" decoding="async">
+          <figcaption>The same overlap operation produces different engineering judgments: maintenance–maintenance overlap is allowed, while maintenance–equipment overlap is prohibited, under the rule used in this example. Simplified illustration.</figcaption>
+        </figure>
+
+        <p>The checker needs to know what the shapes represent, not just whether they intersect. That changes the problem from generic collision detection to executing domain-specific engineering rules.</p>
+
+        <h2>Verification is also a way to understand requirements</h2>
+
+        <p>Running verification against existing layouts gave us a practical way to find disagreements early.</p>
+
+        <p>If the software flags something that engineers consider acceptable, there is a question worth investigating. Perhaps the rule was interpreted incorrectly, the geometry is incomplete, or the layout contains an approved exception. It might also be a genuine violation.</p>
+
+        <p><strong>An existing design is evidence, not automatic ground truth.</strong></p>
+
+        <p>Looking back, I also see the value of turning these disagreements into small, controlled test cases.</p>
+
+        <p>Instead of reviewing an entire factory, we could isolate one question at a time: two machines separated by exactly 80 cm, a protruding component, overlapping maintenance regions, or a maintenance region touching a wall.</p>
+
+        <p>The useful artifact would not just be the test geometry. It would be the expected result, reviewed by engineers, together with the reason it should pass or fail.</p>
+
+        <p>And if no one can agree on that result, the ambiguity should remain visible rather than being hidden inside the implementation.</p>
+
+        <p>This is what makes verification useful before generation. It gives engineers and software developers concrete examples through which to clarify what the requirements actually mean.</p>
+
+        <h2>One rule, different jobs</h2>
+
+        <p>Once we had an executable interpretation of the maintenance-region rule, we used it for both layout verification and placement feasibility.</p>
+
+        <p>In verification, the system checks whether a prohibited spatial relationship exists in a layout. During placement, the same requirement helps determine which candidate positions are allowed before they are selected.</p>
+
+        <p>These are different computational jobs built around the same engineering requirement.</p>
+
+        <p>But there is another question: among valid layouts, which one is better?</p>
+
+        <p>That is evaluation, and it requires a separate definition of quality.</p>
+
+        <p>“At least 80 cm” tells us which layouts are admissible. It does not tell us whether 81 cm is better than 120 cm.</p>
+
+        <p>A compact layout may save floor space. A wider gap may improve accessibility. Preferences for compactness, alignment, or equipment grouping need their own explicit criteria.</p>
+
+        <p><strong>A hard constraint does not automatically become an optimization objective.</strong></p>
+
+        <p>Without this distinction, a system can satisfy every rule and still produce poor designs—or improve a numerical score without improving anything engineers actually care about.</p>
+
+        <h2>Shared meaning does not require identical computation</h2>
+
+        <p>Even when different parts of the system follow the same engineering rule, they may need different implementations.</p>
+
+        <p>A verifier might check detailed polygons directly. A placement optimizer might use simplified geometry or precomputed feasibility masks to search faster.</p>
+
+        <p>These differences can be reasonable, but they come with trade-offs.</p>
+
+        <p>For example, a conservative search approximation may reject a placement that the final verifier would accept. This can make search cheaper, but it also removes some valid solutions from consideration. Candidates that survive search still need to pass the accepted verification standard.</p>
+
+        <p>The more dangerous case is when different implementations silently adopt different meanings of the same rule.</p>
+
+        <p>Or when the checker and optimizer share the same mistaken interpretation. Their agreement proves very little if both are measuring the wrong thing.</p>
+
+        <p>We do not need identical computations everywhere. We need a shared engineering meaning, clear boundaries around approximations, and tests that can reveal when an implementation no longer matches the agreed rule.</p>
+
+        <h2>What verification changes</h2>
+
+        <p>A reviewed, executable rule gives us a common basis for checking existing designs, restricting candidate generation, and explaining why a result was accepted or rejected.</p>
+
+        <p>It gives optimization a clearer feasible space, while explicit preferences define what the search should improve. Different candidates and algorithms can then be compared against the same engineering criteria.</p>
+
+        <p>Those criteria may still change as engineers review more cases. Verification does not settle whether every engineering rule is right. It makes our interpretation explicit enough to inspect, challenge, and revise.</p>
+
+        <p>Before asking a search algorithm for better layouts, I want to know what it is allowed to accept—and why.</p>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="Contact links">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
