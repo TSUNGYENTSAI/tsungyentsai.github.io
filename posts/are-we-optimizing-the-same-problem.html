@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Are We Optimizing the Same Problem? | Tsung-Yen Tsai</title>
+    <meta name="description" content="An engineering insight from layout optimization: why existing layouts and generated results may follow different design conditions, and what that means for evaluating an optimizer.">
+    <link rel="canonical" href="https://tsungyentsai.github.io/posts/are-we-optimizing-the-same-problem.html">
+    <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="article-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="wrapper">
+      <header class="site-header">
+        <a class="site-name" href="../index.html" aria-label="Tsung-Yen Tsai — home">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#writing">Writing</a></li>
+            <li><a href="../index.html#career-history">Career &amp; Education</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <h1>Are We Optimizing the Same Problem?</h1>
+        <p><em>What engineering rules can miss about real-world design decisions.</em></p>
+        <p><small>November 2026 · Tsung-Yen Tsai</small></p>
+
+        <p>We started by trying to generate better industrial equipment layouts. To make that possible, we translated engineering requirements into rules our software could execute and built verification to check the results.</p>
+
+        <p>As development progressed, we also checked existing engineering layouts against those rules. Some did not pass every check.</p>
+
+        <p>A failed check told us that a layout did not satisfy the specification we had encoded. It did not tell us why. The difference could come from our interpretation, incomplete geometry, a different version of a requirement, or a genuine design violation. Project-specific engineering decisions were another possibility.</p>
+
+        <p>That uncertainty raised a question about how we should compare the layouts engineers had designed with the ones our system generated.</p>
+
+        <h2>The rules are not the whole design discussion</h2>
+
+        <p>For illustration, suppose the agreed requirement is 80 cm of maintenance clearance around a machine.</p>
+
+        <p>Now imagine that reducing the clearance to 70 cm in one location would make room for another machine. Engineers might discuss the option with equipment, maintenance, and facility teams. Would routine maintenance still work? What would be harder? Would applicable safety requirements allow it? Is the additional equipment worth the trade-off?</p>
+
+        <p>They might conclude that the 80 cm requirement must remain unchanged. Or they might establish, through the necessary review, that a different arrangement is acceptable for that specific situation.</p>
+
+        <p>The point is not that 70 cm is good enough. It is that the final layout may reflect a project-specific decision that cannot be reconstructed from a general rule alone.</p>
+
+        <p>And we cannot assume that every deviation found in an existing layout resulted from such a decision. A verification failure is evidence of a mismatch, not evidence of an approved exception.</p>
+
+        <h2>Our software followed the encoded specification</h2>
+
+        <p>We were delivering more than a search algorithm. The system generated layouts and verified them against the engineering requirements we had implemented.</p>
+
+        <p>A candidate that failed those checks could not be presented as a valid generated result. The optimizer could not simply decide that a smaller clearance seemed reasonable.</p>
+
+        <p>But consider what happens if a reference layout was designed with an approved project-specific exception that our software was never given. The two designs would not have the same feasible space.</p>
+
+        <p>This is not necessarily a matter of raising the engineering standard. We may simply have formalized the general rule without representing a condition that governed the original design.</p>
+
+        <p>The human layout might fit more equipment. The generated layout might comply more consistently with the encoded requirements. Both observations could be true without telling us which result is better overall.</p>
+
+        <h2>What are we actually evaluating?</h2>
+
+        <p>When a generated layout is less compact than a human-designed reference, it is natural to look at the optimizer. Perhaps the search strategy needs work, or the objective function rewards the wrong things.</p>
+
+        <p>Those are real possibilities. But equipment density alone cannot isolate search performance if the designs were produced under different constraints.</p>
+
+        <p>To evaluate the algorithm, we need comparable problem definitions. If the conditions are truly the same and the generated result is still weaker, the algorithm and evaluation method deserve scrutiny.</p>
+
+        <p>Evaluating the complete engineering tool is a different question. If real projects depend on approved alternatives that the software cannot represent, that is still a potential product limitation. It may lie in problem formulation or the supported workflow, rather than in the search algorithm alone.</p>
+
+        <p>The distinction matters because these gaps call for different improvements. A faster or smarter search will not, by itself, recover conditions that were never included in the problem.</p>
+
+        <h2>What the rulebook alone couldn't tell us</h2>
+
+        <p>This experience made me more careful about what verification results can establish.</p>
+
+        <p>Our verifier could tell us whether an existing layout passed the requirements we had encoded. From that result alone, we could not infer which requirements, exceptions, or decisions had governed its original design.</p>
+
+        <p>The final layout shows us what was chosen.</p>
+
+        <p>The rulebook tells us what the general requirements are.</p>
+
+        <p>Neither necessarily tells us everything about how the engineers arrived at that decision.</p>
+
+        <p>We do not need to prove that every mismatch was an intentional compromise to recognize the evaluation problem. Before treating a gap between human and generated layouts as evidence of a weaker optimizer, we have to understand what each was allowed to do.</p>
+
+        <p><strong>Are we sure we're optimizing the same problem?</strong></p>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="Contact links">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
