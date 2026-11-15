@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>Decision Infrastructure：從工程知識到可執行的決策系統 | 蔡宗諺 Tsung-Yen Tsai</title>
+    <meta name="description" content="從機器人調度、倉儲模擬到工廠工程規劃，討論如何將 Domain Knowledge 轉換成可執行、可驗證、可演進的 Decision Capabilities，並逐步建立 Decision Infrastructure。">
+    <link rel="canonical" href="https://tsungyentsai.github.io/posts/decision-infrastructure.html">
+    <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="article-page">
+    <a class="skip-link" href="#main-content">跳到文章</a>
+    <div class="wrapper">
+      <header class="site-header">
+        <a class="site-name" href="../index.html" aria-label="蔡宗諺 — 首頁">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="主要導覽">
+          <ul>
+            <li><a href="../index.html">首頁</a></li>
+            <li><a href="../index.html#writing">文章</a></li>
+            <li><a href="../index.html#career">經歷</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <h1>Decision Infrastructure：從工程知識到可執行的決策系統</h1>
+        <p><em>從 Domain Modeling、Decision-Grade Abstraction 到可驗證、可演進的 Engineering Workflows</em></p>
+        <p><small><time datetime="2026-11-15">2026 年 11 月 15 日</time> · 蔡宗諺</small></p>
+
+        <p>過去幾年，我陸續參與機器人調度、自動化倉儲模擬，以及工廠設施規劃與最佳化等不同的工程問題。</p>
+
+        <p>這些系統面對的領域完全不同。</p>
+
+        <p>機器人調度需要處理任務、交通控制與動態資源競爭；自動化倉儲需要理解庫存、儲位與搬運策略；工廠規劃則涉及複雜的幾何資訊、工程規則、空間限制與最佳化。</p>
+
+        <p>它們使用的演算法也不相同。有些依賴 Graph Search，有些需要 Discrete-Event Simulation，有些則使用幾何運算與 Optimization。</p>
+
+        <p>但回頭看，我發現自己反覆在做的，其實是同一類工作：</p>
+
+        <p><strong>如何理解一個複雜的工程問題，找到適合的抽象，再將專業知識與演算法組織成可以執行、驗證及持續改進的系統？</strong></p>
+
+        <p>這也逐漸改變了我對 Digital Twin 與 Engineering Software 的理解。</p>
+
+        <p>我們很容易把工程軟體的能力理解成一系列獨立功能：建立 3D Model、執行 Simulation、檢查工程規則，或透過 Optimizer 產生更好的方案。</p>
+
+        <p>但這些功能本身，並不保證系統能夠支持完整的 Engineering Decision。</p>
+
+        <p>一個 Simulation 即使非常逼真，也可能沒有回答真正需要的問題。一個 Optimizer 即使找到數值上更好的答案，也可能沒有完整理解工程條件。即使今天產生了正確的結果，如果明天需求改變，我們仍可能不知道應該修改哪個部分、重新驗證哪些假設。</p>
+
+        <p>因此，我開始思考的不只是如何建立更好的 Digital Model 或 Algorithm，而是如何設計一套能夠持續累積工程理解與決策能力的軟體系統。</p>
+
+        <p>我將這個方向稱為 <strong>Decision Infrastructure</strong>。</p>
+
+        <p>它不是一個能夠處理所有工程問題的 Universal Platform，而是一套從 Domain Knowledge 出發，建立 Decision Models、Executable Capabilities 與 Evolvable Workflows 的工程系統設計方法。</p>
+
+        <h2>01. 從 Engineering Problem 到 Domain Model</h2>
+
+        <p>在工程軟體開發中，我們經常很快就進入技術選型。</p>
+
+        <p>需要 Routing，就研究 A* 或其他 Path Planning Algorithms。</p>
+
+        <p>需要模擬，就開始選擇 Simulation Framework。</p>
+
+        <p>需要最佳化，就設計 Objective Function，再尋找合適的 Solver。</p>
+
+        <p>這些工作都很重要，但我逐漸認為，更值得先回答的是：</p>
+
+        <p><strong>我們究竟希望這套系統做出什麼判斷？</strong></p>
+
+        <p>同樣一個自動化倉儲系統，可以用來研究不同的問題。</p>
+
+        <p>我們可能想知道某個搬運策略是否能減少 Reshuffle，或某種儲位配置是否能改善長期吞吐量，也可能只是想驗證新的調度規則會不會產生資源衝突。</p>
+
+        <p>這些問題面對的是相同的實體系統，卻不一定需要相同的模型與求解方法。</p>
+
+        <p>因此，我認為第一步是 <strong>Decision Framing</strong>。</p>
+
+        <p>在選擇演算法之前，先確認這次真正要回答的問題、可以調整的決策變數、不可違反的條件，以及如何評估結果。</p>
+
+        <p>這一步會決定系統接下來需要理解真實世界的哪些部分。</p>
+
+        <h3>Domain Modeling：讓工程知識有明確的意義</h3>
+
+        <p>這也是我重新認識 Domain-Driven Design（DDD）價值的地方。</p>
+
+        <p>DDD 對我最重要的啟發，不是某個特定的軟體架構模式，而是讓領域專家與軟體工程師，能夠對相同的工程概念建立一致的理解。</p>
+
+        <p>例如在自動化倉儲中，Container、Storage Location、Task 與 Resource 不只是帶有屬性的資料物件。</p>
+
+        <p>它們之間存在具體的工程關係。</p>
+
+        <p>一個 Container 是否能被取出，可能受到堆疊結構、其他任務及資源占用狀態的影響。當目標 Container 被阻擋時，系統可能需要先執行 Reshuffle，再完成 Retrieval。</p>
+
+        <p>如果這些行為與限制只是散落在不同演算法裡的特殊判斷，即使系統可以運作，也很難確認不同模組對問題具有相同的理解。</p>
+
+        <p>Domain Modeling 的目的，是將重要的 Entities、Relationships、States、Invariants 與 Policies，轉換成能夠明確討論、確認與修改的模型。</p>
+
+        <p>但 Domain Model 不應只是把所有資料整理成 Classes，也不需要試圖描述整個真實世界。</p>
+
+        <p>真正重要的是：<strong>哪些概念與關係會影響我們希望做出的決策？</strong></p>
+
+        <p>例如，同一台工廠設備，在 Layout Planning 中可能主要關心 Footprint、Maintenance Region 與 Spatial Relations；但在 Piping Routing 中，關心的則是 Connection Ports、Pipe Clearance 與 3D Obstacles。</p>
+
+        <p>它們描述同一個實體設備，卻有不同的 Domain Semantics。</p>
+
+        <p>因此，Domain Model 的價值不是 Semantic Completeness，而是讓特定問題需要的工程意義足夠明確。</p>
+
+        <p>這也建立了後續 Computational Model、Engineering Rules 與 Decision Workflow 的共同基礎。</p>
+
+        <h2>02. Decision-Grade Abstraction：找到適合決策的計算模型</h2>
+
+        <p>即使已經建立了 Domain Model，也不代表我們擁有適合計算的 Representation。</p>
+
+        <p>真實世界通常遠比某次工程決策需要處理的問題複雜。</p>
+
+        <p>如果我們試圖在每個問題裡完整保留 Geometry、Physics、Dynamics 與 Operational States，會增加建模、計算與維護成本。</p>
+
+        <p>但過度簡化同樣危險。</p>
+
+        <p>如果忽略了真正影響結果的 Constraints 或 Interactions，就可能得到可以快速計算、卻沒有足夠工程意義的答案。</p>
+
+        <p>所以我認為，Abstraction 的目的既不是盡可能接近現實，也不是盡可能減少複雜度。</p>
+
+        <p>而是：</p>
+
+        <blockquote><p><strong>The right abstraction is defined by the decision it needs to support, not by how closely it resembles reality.</strong></p></blockquote>
+
+        <h3>同一個世界，不需要共用相同的計算表示</h3>
+
+        <p>以工廠設施規劃為例。</p>
+
+        <p>當我們需要驗證設備的平面配置與維修空間關係時，2D Polygon 與 Spatial Relations 可能已經足以回答指定範圍的問題。</p>
+
+        <p>但當決策變成 3D Piping Routing，系統就需要理解高度、障礙物、連接端點、管徑與立體空間中的 Clearance。</p>
+
+        <p>前者可能使用平面幾何與拓樸關係，後者則可能需要 Voxel World、Routing Masks 與 Path Search。</p>
+
+        <p>這不是架構不一致。</p>
+
+        <p><strong>同一個 Physical Reality，本來就可以依據不同的 Decision Question，投影成不同的 Computational World。</strong></p>
+
+        <p>這個原則也適用於 Simulation。</p>
+
+        <p>在倉儲演算法研究中，我曾使用 Discrete-Event Simulation，保留訂單、庫存、搬運與資源競爭等關鍵機制，同時刻意簡化低階機器人運動控制。</p>
+
+        <p>這讓策略比較可以在較低的計算成本下進行，但結果仍然受到模型假設限制，不能直接當成真實場域的絕對吞吐量保證。</p>
+
+        <p>因此，<strong>Abstraction 不只是 Representation 的選擇，也是一組關於真實世界的假設。</strong></p>
+
+        <p>它需要回答：我們保留了哪些機制？哪些細節被刻意忽略？這些簡化是否可能改變決策結果？</p>
+
+        <p>當 Decision Question 改變，或新的 Evidence 顯示原本忽略的行為開始影響結果，我們就可能需要修改 Representation。</p>
+
+        <p>我把這種針對決策目的建立、具有明確適用範圍的模型，稱為 <strong>Decision-Grade Representation</strong>。</p>
+
+        <p>它不需要是最完整的模型，但必須能夠說明，在什麼條件下，這個 Abstraction 足以支持我們想做的工程判斷。</p>
+
+        <h2>03. 從 Domain Knowledge 到 Executable Decision Capabilities</h2>
+
+        <p>有了明確的 Domain Model 與適當的 Computational Representation，接下來才是把工程問題轉換成軟體能夠執行的能力。</p>
+
+        <p>這裡我認為有一個很重要的區別：</p>
+
+        <p><strong>實作一個 Algorithm，不等於完成一個 Engineering Decision Capability。</strong></p>
+
+        <p>以工程規則為例。</p>
+
+        <p>假設規範要求設備周圍保留特定的 Maintenance Clearance。</p>
+
+        <p>我們可以寫一個 Geometry Checker，檢查 Polygon 是否重疊，或計算兩個物件之間的距離。</p>
+
+        <p>但 Geometry Operation 本身並不知道哪些物件屬於設備本體、哪些是維修區域、不同區域能否重疊，以及哪些規則適用於這次設計。</p>
+
+        <p>這些必須先由 Domain Semantics 定義。</p>
+
+        <p>而且，即使某個規則已經被轉換成程式碼，也不代表它具有正式的工程權威。</p>
+
+        <p>系統仍然需要知道規則的來源、適用範圍、版本，以及哪些解讀已經被確認。</p>
+
+        <p>因此，真正值得建立的不是一段能夠執行的判斷程式，而是從 <strong>Engineering Knowledge → Explicit Semantics → Executable Rules → Verification Evidence</strong> 的能力。</p>
+
+        <h3>可行性、品質與搜尋，是不同的決策問題</h3>
+
+        <p>工程決策通常會反覆遇到三個問題。</p>
+
+        <p><strong>第一個是 Feasibility：這個方案可不可行？</strong></p>
+
+        <p>這需要明確的 Hard Constraints。</p>
+
+        <p>例如 Collision、Clearance、Capacity、Topology，或其他工程規範。</p>
+
+        <p><strong>第二個是 Evaluation：哪個方案比較好？</strong></p>
+
+        <p>即使兩個方案都符合 Hard Constraints，也可能在距離、成本、效率、可維護性或其他 Preferences 上有所不同。</p>
+
+        <p>符合規則不代表品質最好。</p>
+
+        <p><strong>第三個是 Search / Optimization：如何找到更好的方案？</strong></p>
+
+        <p>當候選空間足夠大，無法人工逐一比較時，我們才需要 Search、Optimization 或其他探索方法。</p>
+
+        <p>這三種問題不一定需要組成固定的 Pipeline。</p>
+
+        <p>Existing Design Verification 可能只需要檢查並產生 Evidence。</p>
+
+        <p>Simulation 可以用來推導某個候選方案的 Consequences，再將結果交給 Evaluation。</p>
+
+        <p>Optimization 則可能反覆產生候選、驗證可行性、評估品質，再依據結果調整搜尋方向。</p>
+
+        <p>真正重要的不是所有問題使用同一個 Solver，而是它們能否在明確的工程條件下，形成可執行、可驗證的 Decision Workflow。</p>
+
+        <h3>Solver 與 Engineering Meaning 應該有清楚的邊界</h3>
+
+        <p>例如，兩個不同的 Routing Algorithms 可以使用不同的 Search Representations 或 Constraint Encodings。</p>
+
+        <p>這本身沒有問題。</p>
+
+        <p>但如果我們想比較它們，就需要確認它們是否處理相同的 Engineering Problem，以及最後是否依據相容的標準進行評估。</p>
+
+        <p>同樣地，一條 Engineering Rule 可能在 Verification 中使用精確的 Geometry Check，在 Search 中則轉換成近似的 Feasibility Mask。</p>
+
+        <p>不同實作可以成立，但它們的語意差異與近似造成的限制，必須能夠被檢查。</p>
+
+        <p>因此，我認為一個好的 Decision Capability，至少需要明確描述：</p>
+
+        <p><strong>它接受什麼問題與條件、使用什麼計算方法、輸出什麼結果，以及結果能夠支持哪些工程結論。</strong></p>
+
+        <p>尤其要避免將 Algorithm Execution 與 Engineering Verification 混為一談。</p>
+
+        <p>一個 Routing Solver 回傳 SUCCESS，可能只代表找到一條 Path，不一定代表完整工程設計已經通過驗證。</p>
+
+        <p>反過來說，Solver 在指定時間內沒有找到解，也不代表已經證明工程問題無解。</p>
+
+        <p>對驗證本身，也必須區分已完成且發現違規、尚未檢查，以及因資料或執行問題無法完成。</p>
+
+        <p>這些看似是 Interface Design 的細節，實際上卻決定了整套系統能否被工程師正確理解與信任。</p>
+
+        <h2>04. 從 Executable Workflow 到 Evolvable Decision System</h2>
+
+        <p>如果系統已經能夠理解 Domain、建立 Representation，並執行 Verification、Simulation 或 Optimization，那麼我們已經具備了一套 Engineering Tool 的核心能力。</p>
+
+        <p>但我認為，真正值得進一步建立的是：</p>
+
+        <p><strong>讓整個 Decision Workflow 不只是能執行，還能被保存、比較、修改與重新組合。</strong></p>
+
+        <p>工程師的工作通常不是提出一個問題、得到一次結果，然後就結束了。</p>
+
+        <p>更常見的是持續迭代。</p>
+
+        <p>我們可能先檢查目前設計是否符合要求，再產生不同候選方案，接著比較品質與 Trade-offs。</p>
+
+        <p>當結果不符合預期，我們可能調整 Objectives、增加 Constraints，或更換 Search Strategy。</p>
+
+        <p>有時候問題甚至不在 Algorithm，而是原本的 Domain Model 缺少重要概念，或 Abstraction 忽略了真正影響結果的機制。</p>
+
+        <p>這代表一個工程決策流程，需要能夠在不同層次上被修正。</p>
+
+        <h3>Workflow 不應只存在於程式碼裡</h3>
+
+        <p>假設一套工程系統的使用方式是：</p>
+
+        <p>準備資料、執行 Script、產生結果，再由工程師手動檢查。</p>
+
+        <p>當需求改變，開發者重新修改 Parameters 或程式碼，然後從頭執行一次。</p>
+
+        <p>這樣的流程可以完成研究與開發，但當問題逐漸複雜、使用者增加，或需要比較多個版本時，就很容易出現困難。</p>
+
+        <p>例如，工程師可能不知道某次結果使用了哪些 Rules，或為什麼兩次執行產生不同的方案。</p>
+
+        <p>如果想要替換 Solver，也可能需要重新整理整個測試流程，甚至重新建立評估方式。</p>
+
+        <p>因此，我認為 Decision Workflow 應該成為一個有明確狀態與契約的系統能力。</p>
+
+        <p>它不必被硬編碼成單一固定流程，而是讓 Decision Context、Models、Methods、Evaluation 與 Results 可以被明確組合。</p>
+
+        <p>使用者可以修改目標、調整限制條件、替換適當的 Decision Method，再透過相同的評估標準比較結果。</p>
+
+        <p>這樣一來，軟體不再只是提供一組演算法，而是讓工程師能夠持續探索問題與設計方案。</p>
+
+        <h3>保存的應該不只是結果，還有產生結果的條件</h3>
+
+        <p>當一個工程結果被產生，我們需要知道它依據哪些輸入資料、模型假設、工程規則、演算法與設定。</p>
+
+        <p>但這還不夠。</p>
+
+        <p>我認為至少需要區分三種不同的紀錄。</p>
+
+        <p><strong>Execution Record</strong> 說明結果如何產生。</p>
+
+        <p><strong>Verification &amp; Evaluation Evidence</strong> 說明結果通過了哪些檢查、具有什麼品質，以及有哪些尚未驗證的條件。</p>
+
+        <p><strong>Human Decision Record</strong> 則保存工程師或其他負責人最後採取了什麼決定，以及當時明確留下的理由與取捨。</p>
+
+        <p>它們彼此相關，但不完全相同。</p>
+
+        <p>即使保存了所有輸入與演算法版本，也不一定能重建工程師為什麼接受某個方案。</p>
+
+        <blockquote><p><strong>Reproducing a computation is not the same as reconstructing an engineering decision.</strong></p></blockquote>
+
+        <p>這些紀錄不一定需要被實作成三套獨立系統。</p>
+
+        <p>更重要的是，它們應該具有清楚的關係，讓不同人可以理解一次決策的前提、結果、證據與審查過程。</p>
+
+        <h3>當條件改變，應該能夠局部修正與重新驗證</h3>
+
+        <p>這裡可以用一個假設性的情境說明。</p>
+
+        <p>某個設備配置在規則版本 R1 下通過了 Verification。後來，Maintenance Clearance 的要求更新為 R2。</p>
+
+        <p>我們不應該直接刪除舊結果，也不需要預設重新執行整個 Optimization。</p>
+
+        <p>更合理的做法是保留原本的候選方案與執行紀錄，確認哪些檢查受到影響，再使用新的規則重新驗證。</p>
+
+        <p>如果原本配置仍然符合新要求，而目的只是確認可行性，就不必重新產生方案。如果新要求造成違規，或新的 Preferences 讓原本方案不再理想，才進一步修改或重新搜尋。</p>
+
+        <p>不過，還需要區分另一種情況。</p>
+
+        <p>如果 R2 不是新的工程要求，而是修正 R1 原本錯誤的規則解讀或檢查實作，那麼舊的 Execution Record 仍應保留，但它曾支持的工程結論可能需要被撤回或重新評估。</p>
+
+        <p><strong>保留歷史紀錄，不代表必須繼續相信原本的結論。</strong></p>
+
+        <p>而 Dependency Tracking 也通常只能幫助我們找出可能受影響的結果，不能直接證明它們全部失效。</p>
+
+        <p>這個例子反映的，不只是版本管理。</p>
+
+        <p>而是當 Decision Context 改變時，系統能否知道哪些能力需要重新執行、哪些證據需要更新，以及哪些部分仍然可以重用。</p>
+
+        <p>以上是我希望這類工程系統逐步具備的設計能力，並不是宣稱我過去已經建立了一套完整的自動變更追蹤平台。</p>
+
+        <h3>Experimentation 也是 Workflow Evolution 的一部分</h3>
+
+        <p>相同的概念也適用於 Simulation 與 Optimization。</p>
+
+        <p>當我們比較兩個 Search Algorithms，通常希望固定問題定義與評估條件，讓差異主要反映方法本身。</p>
+
+        <p>但當我們修改 Constraint、Objective 或 Model Assumption，研究的就是問題條件改變後的結果。</p>
+
+        <p>這兩種比較都很重要，但它們回答的問題不同。</p>
+
+        <p>因此，一套好的 Decision Workflow 應該能從明確的 Baseline 衍生不同版本，保存哪些條件被固定、哪些被修改，以及實驗結果足以支持什麼結論。</p>
+
+        <p>對隨機化的 Simulation，還可能需要保存情境定義、Random Seeds 與必要的執行條件。</p>
+
+        <p>而當新的 Evidence 顯示原本的模型假設不再適用，我們應該可以回頭修正 Domain Model、Representation 或 Decision Method。</p>
+
+        <p>這是一個可以持續反覆進行的工程過程：</p>
+
+        <p><strong>Frame → Model → Execute → Evaluate → Review → Revise</strong></p>
+
+        <p>Feedback 可以回到任何一個階段，而不是只能修改 Solver Parameters。</p>
+
+        <p>這裡所說的 Learning，不一定是 Machine Learning。</p>
+
+        <p>更基本的意思是：<strong>我們對工程問題的理解，可以隨著實驗與經驗持續改善，而系統能夠保存、追溯並承接這些改變。</strong></p>
+
+        <h2>05. From Decision Capabilities to Decision Infrastructure</h2>
+
+        <p>把前面的概念放在一起，我認為已經可以形成一套相對完整的 Engineering Systems Design Methodology。</p>
+
+        <p>從 Decision Question 出發，透過 Domain Modeling 明確整理工程概念與限制。</p>
+
+        <p>再選擇適當的 Abstraction，建立可以運算的 Decision Model。</p>
+
+        <p>接著透過 Verification、Simulation、Evaluation、Search 或 Optimization，形成具有明確結果語意的 Decision Capabilities。</p>
+
+        <p>最後，讓這些能力可以被組合、執行、記錄、比較與修改，形成能夠持續演進的 Engineering Workflow。</p>
+
+        <p>但這裡還有最後一個問題：</p>
+
+        <p><strong>當我們把這套方法應用到下一個工程問題時，哪些東西值得保留下來，而不是重新建立一次？</strong></p>
+
+        <p>這也是我認為 Decision Infrastructure 開始出現的地方。</p>
+
+        <h3>方法論可以跨領域使用，不代表所有軟體都應該共用</h3>
+
+        <p>從機器人調度、倉儲模擬到工廠工程規劃，我認為這套設計方法具有跨領域的適用性。</p>
+
+        <p>但它不代表不同 Domain 應該使用同一套資料模型、同一個 Simulation Framework，或同一種 Optimization Algorithm。</p>
+
+        <p>不同的 Engineering Decisions，本來就需要不同的 Computational Representations 與 Decision Methods。</p>
+
+        <p>真正值得探索的是另一件事：</p>
+
+        <p><strong>當新的 Domain Capability 出現時，我們能不能保留既有的工程理解、執行契約與驗證機制，而不必每次都從零開始？</strong></p>
+
+        <p>例如，不同系統可能都需要處理來源資料與版本、Decision Inputs、Execution Records、Evaluation Evidence、Human Review，以及模型或規則改變後的影響追蹤。</p>
+
+        <p>但這不代表它們必須共用同一種 Domain Semantics。</p>
+
+        <p>一條 Routing Rule 與一條 Warehouse Scheduling Constraint，可能只有管理方式相似，而工程意義完全不同。</p>
+
+        <p>所以值得共享的，可能是規則的來源、版本、審查與證據契約，而不是把所有規則放進一個 Universal Rule Model。</p>
+
+        <p>同樣地，共享能力也不必然代表建立一個中央服務。</p>
+
+        <p>它可能是一份穩定的 Data Contract、一個可重用的 Library、一套 Experiment Artifact，或在需求成熟後才值得抽取的 Shared Service。</p>
+
+        <h3>Infrastructure 應該從真實的 Use Cases 中逐漸形成</h3>
+
+        <p>當我們發現不同工程系統有相似需求，很容易直接想建立一套完整的平台架構。</p>
+
+        <p>但這裡存在過度抽象化的風險。</p>
+
+        <p>如果 Shared Foundation 太早定義，新的 Domain 可能必須配合不適合自己的概念，反而增加整合與維護成本。</p>
+
+        <p>因此，我比較傾向 <strong>Use-case-driven Extraction</strong>。</p>
+
+        <p>先讓一個有實際價值的 Domain Capability 成立。</p>
+
+        <p>當第二個、第三個 Use Case 出現，再觀察哪些部分被重複建立，哪些概念與契約真正穩定，以及哪些共享能力能降低後續的開發與驗證成本。</p>
+
+        <p>這也是為什麼我認為：</p>
+
+        <blockquote><p><strong>Reusable does not necessarily mean worth sharing.</strong></p></blockquote>
+
+        <p>某個元件可以重用，不代表將它抽取成共同基礎設施一定划算。</p>
+
+        <p>我們仍然需要考慮跨系統協調、相容性維護、變更成本，以及對各個 Domain 獨立演進的影響。</p>
+
+        <p>真正值得驗證的是：</p>
+
+        <p>當下一個工程問題出現，新的 Decision Capability 是否能夠更容易建立？</p>
+
+        <p>當工程知識與模型改變，我們是否能夠更有效地追蹤影響並重新驗證？</p>
+
+        <p>這些收益是否足以抵銷共享架構帶來的複雜度？</p>
+
+        <p>如果答案是否定的，那代表我們可能還沒有找到正確的共享邊界。</p>
+
+        <p>因此，我不認為 Decision Infrastructure 應該從一張完整的 Universal Platform Architecture 開始。</p>
+
+        <p><strong>它應該從能夠真正解決工程問題的 Decision Capabilities 出發，再逐步累積那些被反覆驗證、值得重用的能力。</strong></p>
+
+        <p>這些能力是否真的能夠跨 Domain 帶來持續收益，仍然需要更多實際 Use Cases 驗證。</p>
+
+        <h2>Conclusion：從 Digital Models 到可累積的 Engineering Intelligence</h2>
+
+        <p>回頭看，我認為真正重要的問題，已經不只是如何建立更完整的 Digital Twin，或如何設計更強大的 Solver。</p>
+
+        <p>而是：</p>
+
+        <p><strong>我們能不能建立一套系統，將專業工程知識轉換成明確的 Decision Models，讓不同計算方法可以被執行與驗證，並讓整個決策過程能夠隨著新的理解持續演進？</strong></p>
+
+        <p>這件事情並不要求所有工程問題共用相同的模型與演算法。</p>
+
+        <p>相反地，我們需要尊重不同 Domain 的特性，找到適合決策的 Abstraction，並保留各自的專業計算能力。</p>
+
+        <p>但我們也應該讓工程知識、執行條件、結果證據與修訂過程，有機會成為可以持續累積的系統資產。</p>
+
+        <p>我認為這是從 Digital Representation，再往 Engineering Decision 邁進的重要一步。</p>
+
+        <p>而當這些方法與能力開始被不同問題反覆使用，並且真正降低下一個工程決策的開發、驗證與維護成本時，才逐漸形成我所理解的 <strong>Decision Infrastructure</strong>。</p>
+
+        <p>這不是一套已經被完整驗證的 Universal Architecture，而是我從不同工程領域的實踐中逐漸形成、並希望繼續驗證的方法論。</p>
+
+        <p><strong>The goal is not to build one model that understands everything.</strong></p>
+
+        <p><strong>It is to turn engineering understanding into executable, verifiable, and evolving decision capabilities—and make them easier to build upon.</strong></p>
+
+        <section class="related-writing" aria-label="延伸閱讀">
+          <p class="related-writing-label">延伸閱讀</p>
+          <p><a href="verification-before-optimization.html" lang="en">Verification Before Optimization</a></p>
+          <p><a href="are-we-optimizing-the-same-problem.html" lang="en">Are We Optimizing the Same Problem?</a></p>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="聯絡方式">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
