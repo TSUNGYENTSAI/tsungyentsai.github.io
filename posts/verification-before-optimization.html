@@ -48,13 +48,13 @@
 
         <p>Under the rules used in our layout work, maintenance regions could overlap one another, but they could not overlap another machine's physical body or certain physical obstacles.</p>
 
-        <p>Consider two maintenance regions that overlap without touching either machine body. A checker that treats every overlap as a violation would reject this arrangement—even though it satisfies the maintenance-region rule.</p>
+        <p>Consider two maintenance regions that overlap without extending into either machine body. A checker that treats every overlap as a violation would reject this arrangement—even though it satisfies the maintenance-region rule.</p>
 
         <p>The geometry calculation is correct. The engineering judgment is not.</p>
 
         <figure class="article-figure">
           <img src="../assets/images/maintenance-region-rule.svg" width="960" height="350"
-            alt="Two top-view layout examples. On the left, maintenance zones of machines A and B overlap without intersecting either machine body, which is allowed under the example rule. On the right, the maintenance zone of machine A overlaps the physical body of machine B, which violates the rule."
+            alt="Two top-view layout examples. On the left, maintenance zones of machines A and B overlap without extending into either machine body, which is allowed under the example rule. On the right, the maintenance zone of machine A overlaps the physical body of machine B, which violates the rule."
             loading="lazy" decoding="async">
           <figcaption>The same overlap operation produces different engineering judgments: maintenance–maintenance overlap is allowed, while maintenance–equipment overlap is prohibited, under the rule used in this example. Simplified illustration.</figcaption>
         </figure>
