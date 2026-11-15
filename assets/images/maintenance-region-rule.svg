@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 350" role="img" aria-labelledby="title desc">
+  <title id="title">Maintenance-region overlap: allowed versus prohibited</title>
+  <desc id="desc">Left: maintenance regions between two separate machine bodies overlap without touching the machine bodies. Right: one maintenance region intersects another machine body.</desc>
+  <rect width="960" height="350" fill="#FCFCFA"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#303438">
+    <text x="20" y="27" font-size="17" font-weight="700">The meaning of an overlap depends on the objects</text>
+    <rect x="16" y="50" width="450" height="262" rx="8" fill="#FFFFFF" stroke="#CCD3D0" stroke-width="1.5"/>
+    <rect x="494" y="50" width="450" height="262" rx="8" fill="#FFFFFF" stroke="#CCD3D0" stroke-width="1.5"/>
+    <text x="32" y="78" font-size="15" font-weight="700">Maintenance–maintenance</text>
+    <text x="510" y="78" font-size="15" font-weight="700">Maintenance–equipment</text>
+
+    <!-- Left: distinct machine bodies; only the maintenance areas overlap. -->
+    <rect x="55" y="151" width="112" height="77" rx="4" fill="#E5E8E7" stroke="#67716F" stroke-width="2"/>
+    <rect x="339" y="151" width="108" height="77" rx="4" fill="#E5E8E7" stroke="#67716F" stroke-width="2"/>
+    <rect x="167" y="125" width="130" height="128" rx="4" fill="#DDEAF3" fill-opacity=".72" stroke="#4B7191" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect x="256" y="125" width="83" height="128" rx="4" fill="#DDEAF3" fill-opacity=".56" stroke="#4B7191" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect x="256" y="125" width="41" height="128" fill="#DCE9E3" fill-opacity=".90"/>
+    <text x="82" y="193" font-size="14">Machine A</text>
+    <text x="362" y="193" font-size="14">Machine B</text>
+    <text x="179" y="113" font-size="12" fill="#345A78">A maintenance</text>
+    <text x="270" y="272" font-size="12" fill="#345A78">B maintenance</text>
+    <text x="241" y="295" font-size="12" text-anchor="middle" fill="#356B5B" font-weight="700">ALLOWED UNDER THIS RULE</text>
+
+    <!-- Right: maintenance area intersects another machine's solid body. -->
+    <rect x="534" y="151" width="114" height="77" rx="4" fill="#E5E8E7" stroke="#67716F" stroke-width="2"/>
+    <rect x="796" y="151" width="119" height="77" rx="4" fill="#E5E8E7" stroke="#67716F" stroke-width="2"/>
+    <rect x="648" y="125" width="177" height="128" rx="4" fill="#DDEAF3" fill-opacity=".65" stroke="#4B7191" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect x="796" y="151" width="29" height="77" fill="#F1BBB8" stroke="#BA4E4A" stroke-width="1.5"/>
+    <text x="558" y="193" font-size="14">Machine A</text>
+    <text x="842" y="193" font-size="14">Machine B</text>
+    <text x="671" y="113" font-size="12" fill="#345A78">A maintenance</text>
+    <text x="718" y="295" font-size="12" text-anchor="middle" fill="#A03C39" font-weight="700">VIOLATION UNDER THIS RULE</text>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#666A70">
+    <rect x="20" y="328" width="15" height="12" fill="#E5E8E7" stroke="#67716F"/>
+    <text x="42" y="339">Machine body</text>
+    <rect x="177" y="328" width="15" height="12" fill="#DDEAF3" stroke="#4B7191" stroke-dasharray="3 2"/>
+    <text x="199" y="339">Maintenance region</text>
+    <rect x="389" y="328" width="15" height="12" fill="#F1BBB8" stroke="#BA4E4A"/>
+    <text x="411" y="339">Prohibited overlap</text>
+  </g>
+</svg>
