@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>工程條件改變後，原本的結論還成立嗎？ | 蔡宗諺 Tsung-Yen Tsai</title>
+    <meta name="description" content="從 Domain Modeling、Decision-Grade Abstraction 到可追溯的執行、驗證與重新審查，思考工程條件改變後如何重新建立可信任的決策。">
+    <link rel="canonical" href="https://tsungyentsai.github.io/posts/when-engineering-conditions-change.html">
+    <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="article-page">
+    <a class="skip-link" href="#main-content">跳到文章</a>
+    <div class="wrapper">
+      <header class="site-header">
+        <a class="site-name" href="../index.html" aria-label="蔡宗諺 — 首頁">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="主要導覽">
+          <ul>
+            <li><a href="../index.html">首頁</a></li>
+            <li><a href="../index.html#writing">文章</a></li>
+            <li><a href="../index.html#career">經歷</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <h1>工程條件改變後，原本的結論還成立嗎？</h1>
+        <p><em>從一次性的計算結果，到可追溯、可重新驗證的 Decision Infrastructure。</em></p>
+        <p><small><time datetime="2026-11-15">2026 年 11 月 15 日</time> · 蔡宗諺</small></p>
+
+        <p>一個工程方案今天通過了驗證。</p>
+
+        <p>幾週後，工程規則更新了，設備資料也有了新的版本。</p>
+
+        <p><strong>我們還能說這個方案是有效的嗎？</strong></p>
+
+        <p>如果原本的方案仍然符合新要求，我們需要重新產生方案嗎？如果不符合，又該從哪個步驟重新開始？</p>
+
+        <p>更重要的是，我們是否還能確認當初使用了哪些資料、規則與模型假設，以及工程師為什麼接受那個結果？</p>
+
+        <p>過去幾年，我陸續參與機器人調度、自動化倉儲模擬，以及工廠設施規劃與最佳化等不同工程問題。</p>
+
+        <p>這些工作使用的技術並不相同。有些依賴 Graph Search，有些需要離散事件模擬（DES），有些涉及複雜的幾何模型、工程規則與最佳化。</p>
+
+        <p>但回頭看，我發現自己反覆在處理的，其實是同一類問題：</p>
+
+        <p><strong>如何將對真實世界的工程理解，轉換成可以執行、驗證，並隨著新資訊持續修正的決策能力？</strong></p>
+
+        <p>這也改變了我對 Digital Twin 的理解。</p>
+
+        <p>數位表示讓我們能夠描述真實世界；模擬、規則與最佳化讓我們能夠分析與產生方案。</p>
+
+        <p>但即使單次計算已經相當成熟，如果工程條件一改變，我們就無法解釋過去的結果，甚至必須重新建立整個工作流程，那麼這套系統仍然很難支持長期的工程決策。</p>
+
+        <p>因此，我開始把思考方向從 Digital Twin 延伸到 <strong>Decision Infrastructure</strong>。</p>
+
+        <p>我所指的不是一套能解決所有工程問題的通用平台，而是一個系統設計方向：</p>
+
+        <p><strong>讓工程知識、模型、決策方法與證據，能夠被明確定義、執行、追溯、比較及修正，使工程決策不再只是一次性的計算結果。</strong></p>
+
+        <h2>01. 計算之前，先理解決策問題</h2>
+
+        <p>工程軟體的開發，很容易直接從技術開始。</p>
+
+        <p>有 3D 幾何資料，就建立模擬環境。</p>
+
+        <p>需要最佳化，就選擇搜尋演算法或求解器。</p>
+
+        <p>有工程規範，就把規則轉換成程式碼。</p>
+
+        <p>這些技術選擇不一定有問題，但如果過早進入實作，容易跳過一個更根本的問題：</p>
+
+        <p><strong>我們究竟希望軟體協助完成什麼工程決策？</strong></p>
+
+        <p>以自動化倉儲為例，同一套系統可以用來預估吞吐量、比較儲存策略，或驗證調度策略是否造成資源衝突。</p>
+
+        <p>這些問題面對相同的實體系統，卻不一定需要相同的模型、資料、限制條件或評估方法。</p>
+
+        <p>因此，第一步應該是 <strong>Decision Framing</strong>。</p>
+
+        <p>我們需要先確認：</p>
+
+        <p>這次要回答什麼問題？有哪些可以選擇或調整的變數？哪些條件不能違反？我們如何判斷結果好不好？什麼樣的證據足以支持這次結論？</p>
+
+        <p>在問題範圍明確之後，才進一步建立軟體對這個 Domain 的理解。</p>
+
+        <h3>從工程語言到 Domain Model</h3>
+
+        <p>這也是我認為 Domain-Driven Design（DDD）具有價值的地方。</p>
+
+        <p>DDD 對我最重要的啟發，不是某個特定的軟體設計模式，而是讓領域專家與軟體工程師能夠對相同概念建立明確、一致的理解。</p>
+
+        <p>例如在自動化倉儲中，Container、Storage Location、Task 與 Resource，不只是帶有屬性的資料物件。</p>
+
+        <p>它們之間還存在會影響系統行為的關係與限制。</p>
+
+        <p>一個 Container 是否能被取出，可能取決於堆疊結構、其他正在執行的任務，以及資源占用狀態。</p>
+
+        <p>如果這些知識只隱含在個別演算法或特殊條件判斷裡，系統雖然可能正常運作，卻難以確認不同部分是否對工程問題具有相同的理解。</p>
+
+        <p>Domain Modeling 的目的，是讓重要的 Entities、Relationships、States、Invariants 與 Policies 成為可以討論、確認與修改的系統概念。</p>
+
+        <p>但這不代表要建立整個真實世界的完整模型。</p>
+
+        <p>不同問題可以有不同的 Bounded Context，也不需要強迫所有 Domain 使用相同的概念與資料結構。</p>
+
+        <p><strong>好的 Domain Model，不是描述最多資訊，而是在特定問題範圍內，清楚表達哪些工程概念與限制會影響系統行為。</strong></p>
+
+        <p>這讓我們有機會將專業知識從隱含假設，轉換成可以被明確檢查與修正的工程語意。</p>
+
+        <p>但理解 Domain，仍然不等於已經找到適合計算的模型。</p>
+
+        <h2>02. Decision-Grade Abstraction：保留真正影響決策的資訊</h2>
+
+        <p>真實世界通常遠比我們需要回答的問題複雜。</p>
+
+        <p>如果每次工程決策都試圖保留完整的幾何、物理、動態行為與運行狀態，不只增加建模與計算成本，也會提高系統的維護難度。</p>
+
+        <p>但過度簡化同樣危險。</p>
+
+        <p>一旦忽略真正影響結果的限制或互動機制，即使演算法可以快速產生結果，也未必具有工程意義。</p>
+
+        <p>因此，Abstraction 的目的不是盡可能簡化，也不是盡可能接近現實。</p>
+
+        <p>而是找到對特定決策足夠的 Representation。</p>
+
+        <blockquote><p><strong>The right abstraction is defined by the decision it needs to support, not by how closely it resembles reality.</strong></p></blockquote>
+
+        <p>例如，在工廠設施規劃中，某些平面配置與維修空間檢查，可以透過 2D Polygon 與 Spatial Relations 完成。</p>
+
+        <p>但當問題涉及 3D 管線路由，就需要進一步理解障礙物、連接端點、管徑與立體空間中的 Clearance。</p>
+
+        <p>同一個實體環境，可以依據不同的決策問題，建立完全不同的 Computational Models。</p>
+
+        <p>這不代表其中一個比較正確，而是它們支援的工程判斷不同。</p>
+
+        <p>同樣的原則也適用於模擬。在倉儲策略研究中，離散事件模擬可以保留訂單、庫存、搬運與資源競爭等關鍵機制，同時簡化低階運動控制。這樣的模型可以支援指定假設下的策略比較，卻不能直接保證真實場域的絕對吞吐量。</p>
+
+        <p>因此，<strong>Abstraction 不只是技術選擇，也是一組關於真實世界的假設。</strong></p>
+
+        <p>當決策問題改變，或新的證據顯示原本忽略的機制會影響結果，我們可能就需要重新選擇 Representation。</p>
+
+        <p>我將這種針對決策目的建立、具有明確適用範圍的模型，稱為 <strong>Decision-Grade Representation</strong>。</p>
+
+        <p>它不一定是最高 Fidelity 的模型，但我們必須能夠說明：</p>
+
+        <p><strong>它保留了什麼、忽略了什麼，以及在什麼條件下足以支持這次決策。</strong></p>
+
+        <p>這些假設不能只存在於開發者的理解裡。它們也應該成為後續執行、驗證與重新評估時，可以被檢查的條件。</p>
+
+        <h2>03. 從模型到可執行的工程決策</h2>
+
+        <p>當我們有了明確的 Domain Model 與適當的計算表示，才開始將工程問題轉換成可執行的 <strong>Decision Workflow</strong>。</p>
+
+        <p>不同問題可能需要不同的方法。</p>
+
+        <p>有些使用明確的規則驗證可行性。</p>
+
+        <p>有些透過模擬推導候選方案的後果。</p>
+
+        <p>有些需要評估函數比較不同方案的取捨。</p>
+
+        <p>當候選空間足夠大，則可能需要搜尋、最佳化或學習式方法。</p>
+
+        <p>這些方法不需要被統一成一條固定流程。</p>
+
+        <p>真正重要的是，每一個方法都應該在明確的工程條件下執行，並產生具有清楚語意的結果。</p>
+
+        <h3>一個結果究竟代表什麼？</h3>
+
+        <p>假設某個 Routing Engine 回傳 SUCCESS。</p>
+
+        <p>這代表什麼？</p>
+
+        <p>是找到一條從 A 到 B 的路徑？</p>
+
+        <p>是這條路徑已通過指定的 Collision 與 Clearance Checks？</p>
+
+        <p>還是整個工程方案已經滿足所有設計、施工與維護要求？</p>
+
+        <p>這些不是同一件事。</p>
+
+        <p>同樣地，如果 Solver 回傳 FAILED，也需要區分：是輸入資料不完整、工程限制互相衝突，還是在目前的搜尋方法與資源預算下沒有找到可行解？</p>
+
+        <p><strong>Solver 沒有找到解，不等於工程問題已經被證明無解。</strong></p>
+
+        <p>對驗證結果也是如此。我們需要區分：檢查已完成且發現違規、檢查尚未進行，以及檢查因資料或執行問題無法完成。只有第一種能支持「不符合指定條件」的判定。</p>
+
+        <p>因此，一個 Decision Workflow 不能只定義輸入與輸出。</p>
+
+        <p>它還需要明確描述使用的假設、限制條件、評估標準，以及結果究竟可以支持哪些工程結論。</p>
+
+        <p>這也是為什麼我認為 Domain Constraints、Evaluation Criteria 與 Solver Strategy 應該盡可能保持清楚的責任分離。</p>
+
+        <p>不同 Solver 可以使用不同的限制條件編碼或近似方法，但需要確認它們所處理的工程問題與評估標準是否相容。</p>
+
+        <p>這樣我們才有機會在不重新定義整個問題的情況下，替換方法、比較結果，或獨立重新執行驗證。</p>
+
+        <p><strong>Decision Workflow 的價值，不只在於讓演算法可以執行，而是明確定義：在什麼條件下，使用什麼方法，得到什麼結果，以及這個結果能支持什麼判斷。</strong></p>
+
+        <h2>04. 超越執行：讓工程決策可以被重新檢查</h2>
+
+        <p>到這裡，我們已經能夠理解問題、建立模型，並透過不同方法產生與驗證結果。</p>
+
+        <p>但真正值得進一步建立的能力，是讓這些結果在未來仍然可以被理解、檢查與重新判斷。</p>
+
+        <p>因為工程問題不會停留在第一次計算完成的時候。</p>
+
+        <p>設備資料可能更新，工程規則可能修改，新的限制可能出現，甚至我們對問題的理解也可能改變。</p>
+
+        <p>當這些事情發生，我們希望系統能回答：</p>
+
+        <p><strong>哪些條件改變了？哪些結果可能受到影響？我們需要重新驗證，還是重新產生方案？</strong></p>
+
+        <p>以下是我希望這類系統逐步具備的能力。案例用來說明設計責任，不代表我已經實作了完整的跨模型變更追蹤與自動重新驗證系統。</p>
+
+        <h3>4.1 計算、證據與人的決定，需要分開保存</h3>
+
+        <p>首先，我認為必須區分三種資訊。</p>
+
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col">紀錄</th><th scope="col">回答的問題</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Execution Record</strong></td><td>這個結果如何產生？</td></tr>
+              <tr><td><strong>Verification &amp; Evaluation Evidence</strong></td><td>哪些條件已被檢查？結果有什麼品質與限制？</td></tr>
+              <tr><td><strong>Human Decision Record</strong></td><td>誰接受或拒絕了什麼方案？留下哪些理由與條件？</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>執行紀錄可能包含使用的資料、模型、演算法、設定與版本。</p>
+
+        <p>驗證與評估證據則描述哪些檢查通過、哪些失敗，以及哪些項目尚未驗證。</p>
+
+        <p>人的決定紀錄記錄工程師或負責人最終採取的決定，以及當時明確表達的取捨。</p>
+
+        <p>三者可以互相關聯，但不能混為一談。</p>
+
+        <p>即使保存所有輸入、規則與演算法版本，也不一定能重建工程師當時為什麼選擇某個方案。</p>
+
+        <p>因為最後的決定可能涉及沒有被系統形式化的施工經驗、維護考量或其他人類判斷。</p>
+
+        <blockquote><p><strong>Reproducing a computation is not the same as reconstructing an engineering decision.</strong></p></blockquote>
+
+        <p>系統可以保存已經明確記錄的理由，卻不能從結果反推出當時沒有留下的判斷。</p>
+
+        <p>因此，工程決策不應只被保存成單一結果檔案。</p>
+
+        <p>它需要一組彼此關聯的紀錄，讓我們知道結果如何產生、受到哪些證據支持，以及最終做出了什麼決定。</p>
+
+        <h3>4.2 規則從 R1 更新成 R2，舊結果還有效嗎？</h3>
+
+        <p>考慮一個假設性的設備配置問題。</p>
+
+        <p>某個配置方案在工程規則 R1 下通過驗證。</p>
+
+        <p>當時系統保存了設備資料、規則版本、檢查結果，以及工程師的審查紀錄。</p>
+
+        <p>幾週後，Maintenance Clearance 的規則更新為 R2。</p>
+
+        <p>原本的 PASS 還成立嗎？</p>
+
+        <p>答案取決於這次變更的性質。</p>
+
+        <p><strong>第一種情況：工程要求真的改變了。</strong></p>
+
+        <p>例如新的設計規範要求更大的 Maintenance Clearance。</p>
+
+        <p>原本的 PASS 仍然可以描述當時的配置符合 R1，但不能直接證明它符合新的 R2。</p>
+
+        <p><strong>第二種情況：更新修正了原本的錯誤。</strong></p>
+
+        <p>例如後來發現，R1 對某個工程概念的解讀有誤，或驗證實作遺漏了必要檢查。</p>
+
+        <p>這時，雖然原本的執行紀錄仍然應該保留，但它曾經支持的工程結論，可能需要被撤回或重新評估。</p>
+
+        <p>兩者的差異非常重要：</p>
+
+        <p><strong>保留歷史執行紀錄，不代表必須繼續信任它所支持的工程結論。</strong></p>
+
+        <p>一套可信任的系統，需要有能力表達這種差異，而不是單純把所有舊結果標記為 Valid 或 Invalid。</p>
+
+        <h3>4.3 重新驗證，不等於重新產生方案</h3>
+
+        <p>延續前面的例子。</p>
+
+        <p>當規則從 R1 更新成 R2，我們不一定需要重新執行整個 Layout Optimization。</p>
+
+        <p>如果原本的設備配置仍然存在，而且幾何資料與其他輸入條件沒有改變，我們可以先保留原本的候選方案，改用 R2 重新執行相關驗證。</p>
+
+        <p>結果可能有三種：</p>
+
+        <ul>
+          <li>原本的配置仍然通過新規則；若目的只是確認是否符合新要求，就不必重新產生方案。</li>
+          <li>原本的配置違反新要求，需要修改配置或重新搜尋。</li>
+          <li>目前的資料或檢查能力不足，需要補充資訊或人工審查。</li>
+        </ul>
+
+        <p>如果新的目標或偏好也改變了，即使原本的配置仍然合法，也可能值得重新評估或搜尋更好的方案。</p>
+
+        <p>這也說明為什麼候選方案產生、驗證、評估與人工審查值得保有清楚的責任邊界。</p>
+
+        <p>當一個條件改變時，我們不需要預設整條工作流程都必須重新執行。</p>
+
+        <p>更合理的是先確認變更影響了什麼，再決定需要重新執行哪些部分。</p>
+
+        <p>但這裡也存在一個重要限制。</p>
+
+        <p><strong>Dependency Tracking 通常只能幫助我們找出可能受影響的結果，不一定能直接判定它們已經失效。</strong></p>
+
+        <p>例如某條 Clearance Rule 被更新，不代表所有使用舊規則的方案都必然違規。</p>
+
+        <p>系統需要保留原本的結果與證據，再透過重新計算或審查，建立新條件下的判斷。</p>
+
+        <p>真正重要的不是資料庫知道 R1 變成了 R2。</p>
+
+        <p>而是系統能夠理解這次變更如何影響既有的工程結論，以及需要採取什麼行動才能恢復足夠的信心。</p>
+
+        <h3>4.4 修改工作流程，也需要知道什麼改變了</h3>
+
+        <p>同樣的問題也會出現在模擬與最佳化。</p>
+
+        <p>工程師可能想改變搜尋演算法、調整參數，或修改限制條件與評估標準。</p>
+
+        <p>但這些改變代表不同的實驗目的。</p>
+
+        <p>如果要比較兩個演算法，我們通常希望固定問題定義、輸入條件與評估方法，讓差異主要反映方法本身。</p>
+
+        <p>如果改變 Clearance、Objective 或某個模型假設，我們研究的則是問題條件改變後，結果會受到什麼影響。</p>
+
+        <p>這兩種比較都合理，但不能混為一談。</p>
+
+        <p>因此，我認為系統應該能從一個明確的基準建立不同版本，記錄哪些條件保持不變、哪些被刻意修改，以及結果差異能支持什麼結論。</p>
+
+        <p>對包含隨機性的模擬，還可能需要保留情境定義、Random Seeds 與必要的實驗條件，才能支持受控比較與重現。</p>
+
+        <p>更重要的是，Feedback 不應只能修改 Solver Parameters。</p>
+
+        <p>有時新證據會指出原本的 Domain Model 缺少某個重要概念，或計算抽象忽略了影響結果的機制。</p>
+
+        <p>這時需要修正的可能是模型、驗證方式，甚至最開始的決策問題。</p>
+
+        <p>因此，我希望建立的不是一條永遠固定的流程，而是一個能夠反覆修訂的工程過程：</p>
+
+        <p><strong>Question → Model → Execute → Evaluate → Review → Revise</strong></p>
+
+        <p>每次修訂，都應盡可能留下改變的原因、影響範圍與支持證據。</p>
+
+        <p>這裡的 Learning 不一定是 Machine Learning。</p>
+
+        <p>它代表我們對工程問題的理解，能夠透過實驗、觀察與 Domain Review 持續改善，而系統可以承接這些改變。</p>
+
+        <p>但新的證據也不應自動成為正式的工程知識。</p>
+
+        <p>當觀察揭露可能缺少的規則或假設時，仍需要適當的審查，才能將它提升為新的判斷依據。</p>
+
+        <p><strong>工程軟體不只應該幫助我們得到答案，也應該讓我們能夠檢查答案、修改假設，並在條件改變後重新建立可信任的判斷。</strong></p>
+
+        <h2>05. 什麼時候，這些能力才成為 Infrastructure？</h2>
+
+        <p>如果一套工程軟體已經能夠管理模型、執行方法、保存證據並支援重新驗證，這本身就具有價值。</p>
+
+        <p>但什麼時候，我們才有理由將這些能力稱為 <strong>Decision Infrastructure</strong>？</p>
+
+        <p>我認為關鍵不是功能數量，也不是是否建立了中央平台。</p>
+
+        <p>而是這些能力能否跨越單次實作，隨著新的工程問題持續累積與重用。</p>
+
+        <h3>方法論可以跨領域使用，不代表軟體可以直接重用</h3>
+
+        <p>在機器人系統、倉儲自動化、工廠規劃等不同領域中，我們可能反覆使用相似的工程方法：</p>
+
+        <p>定義決策問題、建立 Domain Model、選擇 Abstraction、執行 Solver 或 Simulation，再透過證據驗證與修改結果。</p>
+
+        <p>這代表方法論具有跨領域的適用性。</p>
+
+        <p>但不代表不同 Domain 應該共享同一個資料模型、計算表示或求解器。</p>
+
+        <p>機器人調度、倉儲模擬與管線規劃，各自需要不同的專業語意與計算方法。</p>
+
+        <p>真正可能值得跨應用重用的，是某些相對穩定的機制，例如來源資料與版本的追溯契約、執行與結果紀錄的基本結構、驗證證據與人工審查的關聯方式，以及實驗比較與變更影響的管理機制。</p>
+
+        <p>至於具體的工程規則語意，通常仍然應該由各自的 Domain 負責。</p>
+
+        <p>共享的是適當的契約與機制，不是強迫所有工程問題接受相同的規則。</p>
+
+        <h3>Infrastructure 應該從實際需求中逐步形成</h3>
+
+        <p>即使某些能力可以重用，也不代表立刻值得建立一個 Shared Platform。</p>
+
+        <p>共用架構本身會帶來版本相容性、協調與維護成本，也可能限制不同 Domain 的獨立演進。</p>
+
+        <p>因此，我比較傾向 <strong>Use-case-driven Extraction</strong>。</p>
+
+        <p>先讓每一個 Domain Capability 能夠獨立成立。</p>
+
+        <p>當新的 Use Case 出現，再觀察哪些機制反覆被建立，哪些契約真正穩定，以及共享是否能降低後續的開發與驗證成本。</p>
+
+        <p>這些能力可能透過版本化的資料契約、程式庫、共用介面，或必要時的服務實現。</p>
+
+        <p>不需要事先決定所有能力都必須由一套中央系統管理。</p>
+
+        <p>而且我們應該用實際收益來檢驗這個方向：</p>
+
+        <p>新增下一個工程能力時，是否減少了重複建立資料對應與驗證機制的工作？</p>
+
+        <p>當資料、規則或模型改變時，是否更容易找到受影響的結果並重新建立證據？</p>
+
+        <p>這些收益是否大於共用契約帶來的協調與維護成本？</p>
+
+        <p>如果沒有，那麼即使架構概念相當漂亮，也不代表值得建立。</p>
+
+        <p>我認為這是 Decision Infrastructure 必須保留的工程紀律：</p>
+
+        <p><strong>Reusable 不等於 Worth Sharing。</strong></p>
+
+        <p>不同 Domain 仍然可以獨立累積自己的知識與能力。只有在跨應用共享確實帶來價值時，我們才需要將其中穩定的部分抽取成共同基礎設施。</p>
+
+        <p>因此，Decision Infrastructure 不應該從一張完整的平台架構圖開始。</p>
+
+        <p>它應該從能夠真正回答工程問題的 Decision Capabilities 出發，再逐步累積經過驗證、值得重用的工程契約、知識與工作流程。</p>
+
+        <h2>結語：讓工程決策可以被重新檢查</h2>
+
+        <p>回到最開始的問題。</p>
+
+        <p>一個工程方案今天通過了驗證；幾週後，資料與規則改變了。我們還能說它是有效的嗎？</p>
+
+        <p>我們不該只保留最後的結果，也需要知道當時使用哪些條件、哪些證據支持結論，以及哪些人為判斷曾被明確記錄。</p>
+
+        <p>如此一來，條件改變時，我們才能分辨哪些歷史紀錄需要保留、哪些工程結論需要重驗，哪些決定需要重新審查。</p>
+
+        <p>這套方法未必需要一個通用平台，也不代表已經實作出完整的跨領域基礎設施。但如果其中穩定的能力能在不同問題中持續重用，並確實降低後續決策的成本與風險，它就有機會逐步成為 <strong>Decision Infrastructure</strong>。</p>
+
+        <p><strong>The goal is not just to produce an engineering result. It is to preserve what supports that result, understand when those conditions change, and make engineering decisions possible to revisit.</strong></p>
+
+        <section class="related-writing" aria-label="延伸閱讀">
+          <p class="related-writing-label">延伸閱讀</p>
+          <p><a href="verification-before-optimization.html" lang="en">Verification Before Optimization</a></p>
+          <p><a href="are-we-optimizing-the-same-problem.html" lang="en">Are We Optimizing the Same Problem?</a></p>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="聯絡方式">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
