@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>如果 Agent 是軟體的主要使用者？ | 蔡宗諺 Tsung-Yen Tsai</title>
+    <meta name="description" content="一個尚未驗證的軟體設計假說：從傳統網站、加入 AI Chatbot，到 Agent-first Capabilities 與依需求呈現的 Human Views。">
+    <link rel="canonical" href="https://tsungyentsai.github.io/posts/what-if-agents-were-primary-users.html">
+    <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#FCFCFA">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="article-page">
+    <a class="skip-link" href="#main-content">跳到文章</a>
+    <div class="wrapper">
+      <header class="site-header">
+        <a class="site-name" href="../index.html" aria-label="蔡宗諺 — 首頁">Tsung-Yen Tsai<span lang="zh-Hant">蔡宗諺</span></a>
+        <nav aria-label="主要導覽">
+          <ul>
+            <li><a href="../index.html">首頁</a></li>
+            <li><a href="../index.html#thinking">最近在想</a></li>
+            <li><a href="../index.html#writing">文章</a></li>
+            <li><a href="../index.html#career">經歷</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main id="main-content" tabindex="-1">
+        <h1>如果 Agent 是軟體的主要使用者？</h1>
+        <p><em>Agent-first capabilities. Human views on demand.</em></p>
+        <p><small><time datetime="2026-11-15">2026 年 11 月 15 日</time> · 最近在想 · 蔡宗諺</small></p>
+
+        <p>最近用 AI Agent 進行工程研究與開發時，我開始思考：如果今天從零設計一套專業軟體，而且未來主要操作它的可能是 Agent，我們還會先從人類的操作頁面開始嗎？</p>
+
+        <p>這個問題不只是要不要加上 Chatbot，而是 Application 本身應該圍繞什麼來設計。</p>
+
+        <h2>三種不同的設計重心</h2>
+
+        <p><strong>Traditional Application：</strong>先定義人類的操作流程，再建立頁面、表單與按鈕。工程師設定參數、執行演算法，透過視覺化檢查結果。</p>
+
+        <p><strong>Application + AI Chatbot：</strong>在既有網站加入自然語言入口。AI 可以幫忙設定參數、呼叫 API，甚至操作既有 UI；但系統背後的流程與能力邊界，可能仍是為人類逐步操作而設計。</p>
+
+        <p><strong>Agent-first Application：</strong>如果從一開始就讓 Agent 成為主要操作者，可能會優先設計清楚的 Domain Model、Actions、Algorithms、State 與 Validation。Agent 根據目標組合專業能力，並從結果與錯誤回饋中判斷下一步，而不必模仿人類每一次點擊。</p>
+
+        <p>這不是產品成熟度的三個必經階段。真正的差異不在有沒有聊天視窗，而在專業能力是否能被 Agent 理解、可靠操作與驗證。</p>
+
+        <h2>同一個 Application，不同的 Human Views</h2>
+
+        <p>如果 Agent 可以承擔主要操作，人類還需要什麼樣的介面？</p>
+
+        <p>假設同一套工程規劃軟體產生了一組設計結果。Developer 想看執行狀態、Debug Logs 與失敗原因；PM 想比較方案品質、成本與 Trade-offs；Customer 可能只想看最終方案、關鍵數字，以及需要自己確認的決策。</p>
+
+        <p>甚至同一位工程師，在除錯、比較方案與展示成果時，也需要不同的資訊。</p>
+
+        <p>過去我們可能為這些需求建立很多頁面，分散在不同選單與入口。也許未來可以在同一套 Application 中，由使用者表達當下需求，再依照角色、任務與系統狀態提供對應的 View。</p>
+
+        <p>這不代表 AI 每次都要重新生成網頁。它也可以選擇或組合既有的 3D Viewer、Comparison Dashboard、Debug Panel。不同 Views 呈現的是同一份 Domain State，而不是各自維護一套結果。</p>
+
+        <p><strong>Agent 負責操作，人類仍然需要理解、探索、比較，以及做出決策。</strong></p>
+
+        <h2>這仍然只是一個假設</h2>
+
+        <p>要讓 Agent 可靠操作專業系統，哪些領域知識必須先被明確定義？如何限制權限、處理錯誤、恢復執行，並獨立驗證結果？</p>
+
+        <p>而 Human Views on Demand 真的能降低操作負擔嗎？還是動態介面反而讓系統變得難以預測？某些需要持續監控或精細互動的工作，可能仍然更適合固定介面。</p>
+
+        <p>我想驗證的是兩件事：<strong>Agent-first Capabilities 能否讓專業任務更可靠地完成；Context-driven Human Views 能否讓不同的人更直接地理解同一套系統。</strong></p>
+
+        <p>目前還沒有答案。但我開始認為，AI 可能改變的不只是我們如何使用軟體，而是我們從一開始應該如何設計它。</p>
+
+        <p><em>Software designed for agents to operate, and for humans to understand and decide.</em></p>
+      </main>
+      <footer class="site-footer">
+        <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
+        <nav aria-label="聯絡方式">
+          <a href="https://www.linkedin.com/in/tsungyentsai" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/tsungyentsai" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:tsungyentsai.work@gmail.com">Email</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
