@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Verification Before Optimization | Tsung-Yen Tsai</title>
-    <meta name="description" content="Why verifying existing engineering designs helps reveal ambiguous rules before optimization—and how one reviewed rule can guide checking and search.">
+    <meta name="description" content="An engineering lesson from layout optimization: why reviewing existing designs can expose ambiguous rules, and how shared rule meaning guides verification and search.">
     <link rel="canonical" href="https://tsungyentsai.github.io/posts/verification-before-optimization.html">
     <link rel="stylesheet" href="../stylesheets/styles.css?v=20260916-neutral">
     <meta name="color-scheme" content="light">
@@ -32,25 +32,25 @@
 
         <p>That sounds precise—until two implementations disagree on whether the same layout passes.</p>
 
-        <p>Are we measuring the gap between simplified machine footprints or the outermost physical parts? Do protruding components count? Does a measured clearance of exactly 80 cm pass?</p>
+        <p>Are we measuring the gap between simplified machine footprints or the outermost physical parts? Do protruding components count? How should measurement tolerances and rounding be handled near the 80 cm threshold?</p>
 
         <p>These questions may seem minor in a requirement document, but each answer changes which layouts the software considers acceptable. An optimizer can work exactly as designed and still solve a different problem from the one engineers intended.</p>
 
-        <p>Before asking an algorithm to find a better layout, we need to agree on what makes a layout valid.</p>
+        <p>I learned this while building an automated industrial equipment layout system. But we didn't start with verification first. We learned why it mattered as the project progressed.</p>
 
         <h2>A rule on paper is not yet a rule in software</h2>
 
-        <p>I encountered this problem while working on automated industrial equipment layouts. Checking existing customer layouts against engineering rules exposed differences between the software's interpretation and what engineers expected.</p>
+        <p>Our initial goal was to generate better equipment layouts automatically. We spent considerable effort turning engineering requirements into executable rules, building placement and verification capabilities, and finding ways to generate layouts that satisfied those requirements.</p>
 
-        <p>We were not asking the system to design something new yet. We were checking whether it understood designs that already existed.</p>
+        <p>The difficulty was that many of the rules were written in natural language. Translating them into software required decisions that were not always obvious from the documents.</p>
 
-        <p>One rule involved maintenance regions around equipment.</p>
+        <p>Another example involved maintenance regions around equipment.</p>
 
         <p>Under the rules used in our layout work, maintenance regions could overlap one another, but they could not overlap another machine's physical body or certain physical obstacles.</p>
 
         <p>Consider two maintenance regions that overlap without extending into either machine body. A checker that treats every overlap as a violation would reject this arrangement—even though it satisfies the maintenance-region rule.</p>
 
-        <p>The geometry calculation is correct. The engineering judgment is not.</p>
+        <p>The intersection test is correct. The interpretation of the engineering rule is not.</p>
 
         <figure class="article-figure">
           <img src="../assets/images/maintenance-region-rule.svg" width="960" height="350"
@@ -63,25 +63,27 @@
 
         <h2>Verification is also a way to understand requirements</h2>
 
-        <p>Running verification against existing layouts gave us a practical way to find disagreements early.</p>
+        <p>As development progressed, we also used the verifier to check existing customer layouts.</p>
 
-        <p>If the software flags something that engineers consider acceptable, there is a question worth investigating. Perhaps the rule was interpreted incorrectly, the geometry is incomplete, or the layout contains an approved exception. It might also be a genuine violation.</p>
+        <p>This revealed something that was not always obvious from the written requirements. Some results did not match what engineers expected, while parts of existing designs did not necessarily conform to the general rules as we understood them.</p>
+
+        <p>A flagged violation did not automatically mean the existing design was wrong. Perhaps our interpretation was incorrect, the geometry was incomplete, or the layout contained an approved exception—or a genuine violation.</p>
 
         <p><strong>An existing design is evidence, not automatic ground truth.</strong></p>
 
-        <p>Looking back, I also see the value of turning these disagreements into small, controlled test cases.</p>
+        <p>Comparing our rule implementation with those designs helped expose disagreements that might otherwise have remained hidden inside the optimizer.</p>
 
-        <p>Instead of reviewing an entire factory, we could isolate one question at a time: two machines separated by exactly 80 cm, a protruding component, overlapping maintenance regions, or a maintenance region touching a wall.</p>
+        <p>Looking back, I wish we had done more of this earlier. Rather than spending so much effort on generating better layouts, we could have used a simpler verifier to test our interpretation of the rules against existing designs first.</p>
 
-        <p>The useful artifact would not just be the test geometry. It would be the expected result, reviewed by engineers, together with the reason it should pass or fail.</p>
+        <p>I would also turn those disagreements into small, controlled test cases. Instead of reviewing an entire factory, we could isolate one question at a time: two machines separated by exactly 80 cm, a protruding component, overlapping maintenance regions, or a maintenance region touching a wall.</p>
 
-        <p>And if no one can agree on that result, the ambiguity should remain visible rather than being hidden inside the implementation.</p>
+        <p>The useful artifact would not just be the geometry. It would be the expected result, reviewed by engineers, together with the reason it should pass or fail. If no one can agree on that result, the ambiguity should remain visible rather than being hidden inside the implementation.</p>
 
-        <p>This is what makes verification useful before generation. It gives engineers and software developers concrete examples through which to clarify what the requirements actually mean.</p>
+        <p>That experience changed how I think about verification. <strong>Verification is not only a way to check what we generate. It is also a way to discover whether we understood what we were asked to generate.</strong></p>
 
         <h2>One rule, different jobs</h2>
 
-        <p>Once we had an executable interpretation of the maintenance-region rule, we used it for both layout verification and placement feasibility.</p>
+        <p>The maintenance-region rule eventually served two purposes in our system: layout verification and placement feasibility.</p>
 
         <p>In verification, the system checks whether a prohibited spatial relationship exists in a layout. During placement, the same requirement helps determine which candidate positions are allowed before they are selected.</p>
 
@@ -115,15 +117,21 @@
 
         <p>We do not need identical computations everywhere. We need a shared engineering meaning, clear boundaries around approximations, and tests that can reveal when an implementation no longer matches the agreed rule.</p>
 
-        <h2>What verification changes</h2>
+        <h2>What I would do differently</h2>
 
-        <p>A reviewed, executable rule gives us a common basis for checking existing designs, restricting candidate generation, and explaining why a result was accepted or rejected.</p>
+        <p>If I were starting a similar project today, I would bring verification into the discussion much earlier.</p>
 
-        <p>It gives optimization a clearer feasible space, while explicit preferences define what the search should improve. Different candidates and algorithms can then be compared against the same engineering criteria.</p>
+        <p>Not because every rule must be finalized before we begin generating layouts. Engineering requirements will continue to evolve.</p>
 
-        <p>Those criteria may still change as engineers review more cases. Verification does not settle whether every engineering rule is right. It makes our interpretation explicit enough to inspect, challenge, and revise.</p>
+        <p>But before investing heavily in optimization, I would want a small, executable set of rules that we could test against existing designs and review with engineers.</p>
 
-        <p>Before asking a search algorithm for better layouts, I want to know what it is allowed to accept—and why.</p>
+        <p>That would help us distinguish three different problems: whether we understood the requirements, whether our software implemented them correctly, and whether the optimizer could find better solutions under those requirements.</p>
+
+        <p>We eventually learned that improving the optimizer was not always the most important next step. Sometimes, agreeing on how to judge its output mattered much more.</p>
+
+        <p>Verification gives optimization a clearer feasible space, while explicit preferences define what the search should improve. Neither guarantees that every engineering rule is correct, but both make our assumptions easier to inspect and revise.</p>
+
+        <p><strong>Before asking a search algorithm for better layouts, I want to know what it is allowed to accept—and why.</strong></p>
       </main>
       <footer class="site-footer">
         <p>Tsung-Yen Tsai <span lang="zh-Hant">蔡宗諺</span></p>
